@@ -3,153 +3,245 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Facts-Only MF Assistant — HDFC Mutual Fund</title>
+<title>Facts-Only MF Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blue:#2F7BF6;
-    --bg:#f4f6fb;
-    --card:#ffffff;
-    --text:#1b2430;
-    --muted:#6b7686;
-    --border:#e3e8f0;
-    --bot-bg:#eef2fb;
-    --user-bg:#2F7BF6;
+    --mint:#00D09C;
+    --mint-dark:#00B589;
+    --mint-tint:#E4FBF4;
+    --mint-tint-2:#F0FDF9;
+    --navy:#0C1B33;
+    --ink:#141A21;
+    --muted:#6B7685;
+    --line:#E7EBF0;
+    --bg:#F4F6F8;
+    --card:#FFFFFF;
+    --warn-bg:#FFF6E5;
+    --warn-line:#FCE6B0;
+    --warn-text:#8A5B00;
   }
   *{box-sizing:border-box;}
+  html,body{height:100%;}
   body{
     margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
+    font-family:"DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background:
+      radial-gradient(720px 320px at 15% -8%, rgba(0,208,156,0.16), transparent 60%),
+      radial-gradient(640px 300px at 100% 0%, rgba(83,103,245,0.10), transparent 55%),
+      var(--bg);
+    color:var(--ink);
     display:flex;
     justify-content:center;
-    padding:24px 12px;
+    padding:28px 12px;
+    min-height:100vh;
   }
   .app{
     width:100%;
-    max-width:640px;
+    max-width:460px;
     background:var(--card);
-    border:1px solid var(--border);
-    border-radius:16px;
-    box-shadow:0 4px 24px rgba(20,30,60,0.06);
+    border-radius:24px;
+    box-shadow:0 1px 2px rgba(12,27,51,0.04), 0 24px 48px -16px rgba(12,27,51,0.18);
     display:flex;
     flex-direction:column;
     overflow:hidden;
-    min-height:640px;
+    height:min(760px, 88vh);
   }
   header{
-    padding:20px 22px 14px;
-    border-bottom:1px solid var(--border);
+    padding:22px 22px 16px;
+    background:linear-gradient(180deg, #FFFFFF 0%, #FBFFFE 100%);
+    border-bottom:1px solid var(--line);
   }
-  header h1{
-    font-size:17px;
-    margin:0 0 4px;
+  .brandrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
   }
-  header p{
+  .logo-mark{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    background:linear-gradient(135deg, var(--mint) 0%, #00A8E8 130%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 4px 10px rgba(0,208,156,0.35);
+  }
+  .logo-mark svg{ width:18px; height:18px; }
+  .brand-text h1{
+    font-size:16.5px;
+    font-weight:800;
     margin:0;
+    color:var(--navy);
+    letter-spacing:-0.01em;
+  }
+  .brand-text .sub{
+    font-size:11.5px;
+    color:var(--muted);
+    font-weight:500;
+  }
+  header p.desc{
+    margin:0 0 12px;
     font-size:13px;
     color:var(--muted);
-    line-height:1.5;
+    line-height:1.55;
   }
   .disclaimer{
-    display:inline-block;
-    margin-top:8px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
     font-size:11.5px;
-    font-weight:600;
-    color:#a15c00;
-    background:#fff4e0;
-    border:1px solid #ffe1a8;
-    padding:3px 9px;
+    font-weight:700;
+    color:var(--warn-text);
+    background:var(--warn-bg);
+    border:1px solid var(--warn-line);
+    padding:5px 11px;
     border-radius:999px;
   }
+  .disclaimer::before{
+    content:"";
+    width:6px; height:6px;
+    border-radius:50%;
+    background:#E9A400;
+    flex-shrink:0;
+  }
   .examples{
-    padding:12px 22px;
+    padding:14px 22px;
     display:flex;
     flex-wrap:wrap;
     gap:8px;
-    border-bottom:1px solid var(--border);
-    background:#fafbfd;
+    border-bottom:1px solid var(--line);
+    background:var(--mint-tint-2);
   }
   .example-chip{
     font-size:12.5px;
+    font-weight:600;
     background:#fff;
-    border:1px solid var(--border);
-    color:var(--blue);
-    padding:6px 12px;
+    border:1px solid var(--line);
+    color:var(--mint-dark);
+    padding:7px 13px;
     border-radius:999px;
     cursor:pointer;
-    transition:background .15s;
+    transition:all .15s;
   }
-  .example-chip:hover{ background:#eaf1ff; }
+  .example-chip:hover{
+    background:var(--mint);
+    color:#fff;
+    border-color:var(--mint);
+    transform:translateY(-1px);
+  }
   #chat{
     flex:1;
-    padding:18px 20px;
+    padding:20px 20px 8px;
     overflow-y:auto;
     display:flex;
     flex-direction:column;
-    gap:12px;
+    gap:14px;
+    background:var(--card);
   }
-  .msg{ display:flex; flex-direction:column; max-width:85%; }
+  #chat::-webkit-scrollbar{ width:6px; }
+  #chat::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+  .msg{ display:flex; flex-direction:column; max-width:86%; }
   .msg.user{ align-self:flex-end; align-items:flex-end; }
   .msg.bot{ align-self:flex-start; align-items:flex-start; }
   .bubble{
-    padding:10px 14px;
-    border-radius:14px;
-    font-size:14px;
-    line-height:1.5;
+    padding:11px 15px;
+    border-radius:16px;
+    font-size:13.5px;
+    line-height:1.55;
     white-space:pre-wrap;
+    font-weight:500;
   }
   .msg.user .bubble{
-    background:var(--user-bg);
+    background:linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
     color:#fff;
-    border-bottom-right-radius:4px;
+    border-bottom-right-radius:5px;
+    box-shadow:0 4px 10px rgba(0,208,156,0.25);
   }
   .msg.bot .bubble{
-    background:var(--bot-bg);
-    color:var(--text);
-    border-bottom-left-radius:4px;
+    background:#F4F6F8;
+    color:var(--ink);
+    border:1px solid var(--line);
+    border-bottom-left-radius:5px;
   }
   .source-link{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
     font-size:11.5px;
-    margin-top:4px;
-    color:var(--blue);
+    font-weight:700;
+    margin-top:6px;
+    color:var(--mint-dark);
     text-decoration:none;
+    padding:4px 10px;
+    background:var(--mint-tint);
+    border-radius:999px;
   }
-  .source-link:hover{ text-decoration:underline; }
+  .source-link:hover{ background:var(--mint); color:#fff; }
   form#askForm{
     display:flex;
-    gap:8px;
+    align-items:center;
+    gap:10px;
     padding:14px 16px;
-    border-top:1px solid var(--border);
-    background:#fafbfd;
+    border-top:1px solid var(--line);
+    background:#fff;
   }
   #query{
     flex:1;
-    padding:11px 14px;
-    border-radius:10px;
-    border:1px solid var(--border);
-    font-size:14px;
+    padding:12px 16px;
+    border-radius:999px;
+    border:1.5px solid var(--line);
+    font-size:13.5px;
+    font-family:inherit;
     outline:none;
+    background:var(--bg);
+    color:var(--ink);
   }
-  #query:focus{ border-color:var(--blue); }
+  #query::placeholder{ color:#9AA5B1; }
+  #query:focus{ border-color:var(--mint); background:#fff; box-shadow:0 0 0 4px rgba(0,208,156,0.12); }
   button[type="submit"]{
-    background:var(--blue);
+    width:42px;
+    height:42px;
+    flex-shrink:0;
+    background:linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
     color:#fff;
     border:none;
-    border-radius:10px;
-    padding:0 18px;
-    font-size:14px;
-    font-weight:600;
+    border-radius:50%;
     cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 10px rgba(0,208,156,0.35);
+    transition:transform .12s;
   }
-  button[type="submit"]:hover{ background:#2566d6; }
+  button[type="submit"]:hover{ transform:scale(1.06); }
+  button[type="submit"] svg{ width:17px; height:17px; }
+  @media (max-width: 480px){
+    body{ padding:0; }
+    .app{ max-width:100%; height:100vh; border-radius:0; }
+  }
 </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <h1>Facts-Only MF Assistant</h1>
-      <p>Ask me anything factual about HDFC Large Cap, Flexi Cap, ELSS Tax Saver, or Mid Cap Fund — expense ratio, exit load, minimum SIP, lock-in, riskometer, benchmark, or statement downloads. Every answer links its official source.</p>
+      <div class="brandrow">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 16L9 11L13 15L20 7" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15 7H20V12" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Facts-Only MF Assistant</h1>
+          <div class="sub">HDFC Mutual Fund · verified sources only</div>
+        </div>
+      </div>
+      <p class="desc">Ask about expense ratio, exit load, minimum SIP, ELSS lock-in, riskometer, benchmark, or statement downloads for HDFC Large Cap, Flexi Cap, ELSS Tax Saver, or Mid Cap Fund. Every answer links its official source.</p>
       <span class="disclaimer">Facts-only. No investment advice.</span>
     </header>
     <div class="examples">
@@ -160,7 +252,11 @@
     <div id="chat"></div>
     <form id="askForm">
       <input id="query" type="text" placeholder="Ask a factual question…" autocomplete="off" />
-      <button type="submit">Ask</button>
+      <button type="submit" aria-label="Send">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12L20 4L14 20L11 13L4 12Z" fill="white"/>
+        </svg>
+      </button>
     </form>
   </div>
   <script src="app.js"></script>
