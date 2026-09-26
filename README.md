@@ -11,7 +11,9 @@ A small FAQ assistant that answers **verified factual questions** about four HDF
 - HDFC Mid Cap Fund
 
 ## Live demo
-Open `index.html` in a browser (or the hosted link, if shared separately) — no build step, no server-side dependency, no API key required.
+**https://sushantmulmuley.github.io/verifiedfund/**
+
+No build step, no server-side dependency, no API key required — it's a static page hosted on GitHub Pages.
 
 ## Why no LLM API call at runtime
 This environment had no LLM API key available. Rather than fake one, the assistant is built as a **small, deterministic retrieval engine**: user text is matched to an *intent* (expense ratio / exit load / min SIP / lock-in / riskometer / benchmark / statement download) and a *scheme* (by name or alias), then the matching fact is pulled from a fixed JSON corpus (`data/schemes.json`) that was hand-populated from the 22 official source pages in `sources.csv`. This is arguably a *stricter* implementation of "Facts-Only" than an LLM-generated answer would be: there is zero chance of a hallucinated number, because every value is looked up, never generated. It still demonstrates the three skills the milestone tests:
