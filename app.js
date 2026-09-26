@@ -13,7 +13,7 @@ let lastSchemeId = null; // session-only memory of the last scheme discussed
 let fallbackStreak = 0;  // consecutive "couldn't understand" replies
 
 async function loadCorpus() {
-  const res = await fetch("data/schemes.json");
+  const res = await fetch("data/schemes.json?v=2", { cache: "no-cache" });
   CORPUS = await res.json();
 }
 
