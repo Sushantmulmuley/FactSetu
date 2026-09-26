@@ -43,50 +43,29 @@
     min-height:100vh;
   }
 
-  /* phone shell */
-  .shell{
-    width:100%;
-    max-width:410px;
-    background:var(--navy);
-    border-radius:44px;
-    padding:12px;
-    box-shadow:0 2px 4px rgba(11,30,51,.08), 0 40px 70px -24px rgba(11,30,51,.45);
-  }
+  /* widget card */
   .screen{
+    width:100%;
+    max-width:420px;
     background:var(--card);
-    border-radius:34px;
+    border-radius:26px;
     overflow:hidden;
     display:flex;
     flex-direction:column;
-    height:min(772px, 82vh);
+    height:min(720px, 86vh);
     position:relative;
+    box-shadow:0 1px 2px rgba(11,30,51,.05), 0 30px 60px -20px rgba(11,30,51,.28);
+    border:1px solid var(--line);
   }
-  .statusbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 24px 4px;
-    font-size:12px;
-    font-weight:700;
-    color:var(--navy);
-    flex-shrink:0;
-  }
-  .statusbar .icons{ display:flex; gap:5px; align-items:center; }
 
   /* app bar */
   .appbar{
     display:flex;
     align-items:center;
     gap:11px;
-    padding:6px 18px 14px;
+    padding:18px 20px 14px;
     flex-shrink:0;
-  }
-  .back-btn{
-    width:32px; height:32px;
-    border-radius:50%;
-    background:var(--page);
-    display:flex; align-items:center; justify-content:center;
-    flex-shrink:0;
+    border-bottom:1px solid var(--line);
   }
   .appbar-title{ flex:1; }
   .appbar-title .name{ font-size:15px; font-weight:800; color:var(--navy); line-height:1.25; }
@@ -103,7 +82,7 @@
   .scroll{
     flex:1;
     overflow-y:auto;
-    padding:0 18px 10px;
+    padding:16px 18px 10px;
   }
   .scroll::-webkit-scrollbar{ width:5px; }
   .scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
@@ -255,32 +234,19 @@
 
   @media (max-width: 460px){
     body{ padding:0; align-items:stretch; }
-    .shell{ max-width:100%; border-radius:0; padding:0; box-shadow:none; }
-    .screen{ height:100vh; border-radius:0; }
+    .screen{ max-width:100%; height:100vh; border-radius:0; box-shadow:none; border:none; }
   }
 </style>
 </head>
 <body>
-  <div class="shell">
     <div class="screen">
-      <div class="statusbar">
-        <span>9:41</span>
-        <div class="icons">
-          <svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M1 9C4 4 12 4 15 9" stroke="#0B1E33" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <svg width="16" height="11" viewBox="0 0 18 12" fill="none"><rect x="1" y="1" width="14" height="10" rx="2" stroke="#0B1E33" stroke-width="1.3"/><rect x="2.5" y="2.5" width="9" height="7" fill="#0B1E33"/><rect x="16" y="4" width="1.5" height="4" fill="#0B1E33"/></svg>
-        </div>
-      </div>
-
       <div class="appbar">
-        <div class="back-btn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="#0B1E33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 16L9 11L13 15L20 7" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H20V12" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="appbar-title">
           <div class="name">Facts Assistant</div>
-          <div class="tag">HDFC Mutual Fund · on Groww</div>
-        </div>
-        <div class="avatar">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 16L9 11L13 15L20 7" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H20V12" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="tag">HDFC Mutual Fund · verified sources only</div>
         </div>
       </div>
 
@@ -329,7 +295,6 @@
       </form>
       <div class="foot-note"><b>Facts-only.</b> No investment advice.</div>
     </div>
-  </div>
   <script src="app.js"></script>
 </body>
 </html>
