@@ -6,295 +6,355 @@
 <title>Facts Assistant · HDFC Mutual Fund</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --mint:#00D09C;
-    --mint-dark:#00B589;
-    --mint-tint:#E7FBF4;
-    --navy:#0B1E33;
-    --ink:#141A21;
-    --muted:#6B7685;
-    --faint:#9AA6B4;
-    --line:#EAEEF2;
-    --page:#EFF2F5;
-    --card:#FFFFFF;
-    --chip1:#E7FBF4; --chip1-ic:#00B589;
-    --chip2:#EAF0FF; --chip2-ic:#5367F5;
-    --chip3:#FFF1E6; --chip3-ic:#E8752E;
-    --chip4:#F4ECFF; --chip4-ic:#8B5CF6;
-    --chip5:#FFECEE; --chip5-ic:#EF4D6B;
-    --chip6:#E6F7FB; --chip6-ic:#0EA5C4;
+    --mint-dim:#00B589;
+    --mint-glow:rgba(0,208,156,0.14);
+    --red:#FF5B5B;
+    --bg:#0A0D11;
+    --panel:#12161B;
+    --panel-2:#171C22;
+    --line:#242A31;
+    --line-soft:#1C2128;
+    --ink:#EDEFF2;
+    --muted:#8B94A1;
+    --faint:#5C6470;
+    --chip1:#0F2A22; --chip1-ic:#00D09C;
+    --chip2:#151E33; --chip2-ic:#6E85FF;
+    --chip3:#2E2012; --chip3-ic:#F4924A;
+    --chip4:#231A33; --chip4-ic:#B58CFF;
+    --chip5:#2E141C; --chip5-ic:#FF7590;
+    --chip6:#0F262C; --chip6-ic:#39C2E0;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
     margin:0;
-    font-family:"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background:
-      radial-gradient(900px 420px at 20% -10%, rgba(0,208,156,0.14), transparent 55%),
-      radial-gradient(700px 380px at 100% 0%, rgba(83,103,245,0.10), transparent 55%),
-      var(--page);
+    font-family:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background:var(--bg);
     color:var(--ink);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:28px 12px;
-    min-height:100vh;
   }
 
-  /* widget card */
-  .screen{
-    width:100%;
-    max-width:420px;
-    background:var(--card);
-    border-radius:26px;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-    height:min(720px, 86vh);
-    position:relative;
-    box-shadow:0 1px 2px rgba(11,30,51,.05), 0 30px 60px -20px rgba(11,30,51,.28);
-    border:1px solid var(--line);
-  }
-
-  /* app bar */
-  .appbar{
+  /* top navbar, like a real Groww header */
+  .topbar{
     display:flex;
     align-items:center;
-    gap:11px;
-    padding:18px 20px 14px;
-    flex-shrink:0;
-    border-bottom:1px solid var(--line);
+    gap:22px;
+    padding:0 28px;
+    height:60px;
+    border-bottom:1px solid var(--line-soft);
+    background:#0A0D11;
+    position:sticky; top:0; z-index:10;
   }
-  .appbar-title{ flex:1; }
-  .appbar-title .name{ font-size:15px; font-weight:800; color:var(--navy); line-height:1.25; }
-  .appbar-title .tag{ font-size:11px; font-weight:600; color:var(--mint-dark); }
-  .avatar{
-    width:34px; height:34px; border-radius:11px;
+  .topbar .logo{
+    width:30px; height:30px; border-radius:8px;
     background:linear-gradient(140deg, var(--mint) 0%, #00A8E8 130%);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 14px rgba(0,208,156,.35);
     flex-shrink:0;
   }
-  .avatar svg{ width:17px; height:17px; }
-
-  .scroll{
-    flex:1;
-    overflow-y:auto;
-    padding:16px 18px 10px;
+  .topbar .logo svg{ width:16px; height:16px; }
+  .topbar .brand{ font-size:15px; font-weight:800; letter-spacing:-.01em; }
+  .topbar .navlinks{ display:flex; gap:26px; flex:1; }
+  .topbar .navlinks span{
+    font-size:13.5px; font-weight:600; color:var(--muted);
+    padding:20px 0; cursor:default;
   }
-  .scroll::-webkit-scrollbar{ width:5px; }
-  .scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
-
-  /* greeting hero */
-  .hero{
-    background:linear-gradient(135deg, var(--mint) 0%, #00B589 100%);
-    border-radius:20px;
-    padding:16px 18px;
-    color:#fff;
-    margin-bottom:16px;
-    position:relative;
-    overflow:hidden;
+  .topbar .navlinks span.active{ color:var(--ink); border-bottom:2px solid var(--mint); }
+  .topbar .right{ display:flex; align-items:center; gap:14px; }
+  .verified-pill{
+    display:flex; align-items:center; gap:6px;
+    font-size:11.5px; font-weight:700; color:var(--mint);
+    background:var(--mint-glow);
+    border:1px solid rgba(0,208,156,0.28);
+    padding:6px 12px; border-radius:999px;
   }
-  .hero::after{
-    content:"";
-    position:absolute; right:-30px; top:-30px;
-    width:120px; height:120px; border-radius:50%;
-    background:rgba(255,255,255,0.10);
-  }
-  .hero h2{ margin:0 0 4px; font-size:15px; font-weight:800; position:relative; }
-  .hero p{ margin:0; font-size:12px; font-weight:500; opacity:.94; line-height:1.5; position:relative; max-width:88%; }
+  .verified-pill .dot{ width:6px; height:6px; border-radius:50%; background:var(--mint); }
 
-  .section-label{
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:.04em;
-    text-transform:uppercase;
-    color:var(--faint);
-    margin:2px 2px 9px;
-  }
-
-  /* quick topic grid */
-  .topic-grid{
+  .wrap{
+    max-width:1040px;
+    margin:0 auto;
+    padding:26px 28px 40px;
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:9px;
-    margin-bottom:18px;
+    grid-template-columns:260px 1fr;
+    gap:20px;
+    align-items:start;
   }
-  .topic-tile{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:15px;
-    padding:11px 8px 9px;
+
+  /* left rail: scheme + quick topics */
+  .rail{
     display:flex;
     flex-direction:column;
-    align-items:center;
-    gap:6px;
-    cursor:pointer;
-    text-align:center;
-    transition:transform .12s, border-color .12s;
+    gap:14px;
+    position:sticky;
+    top:80px;
   }
-  .topic-tile:hover{ transform:translateY(-2px); border-color:var(--mint); }
-  .topic-tile .ic{
-    width:32px; height:32px; border-radius:10px;
+  .rail-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+  }
+  .rail-card h3{
+    margin:0 0 3px;
+    font-size:14px; font-weight:800;
+  }
+  .rail-card p{
+    margin:0 0 14px;
+    font-size:12px; color:var(--muted); line-height:1.5;
+  }
+  .scheme-list{ display:flex; flex-direction:column; gap:2px; }
+  .scheme-list div{
+    font-size:12.5px; font-weight:600; color:var(--ink);
+    padding:8px 10px; border-radius:8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .scheme-list div::before{
+    content:""; width:6px; height:6px; border-radius:50%; background:var(--mint); flex-shrink:0;
+  }
+  .rail-section-label{
+    font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--faint); margin:2px 2px 10px;
+  }
+  .topic-row{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 8px; border-radius:9px;
+    cursor:pointer;
+    transition:background .12s;
+  }
+  .topic-row:hover{ background:var(--panel-2); }
+  .topic-row .ic{
+    width:28px; height:28px; border-radius:8px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
   }
-  .topic-tile .ic svg{ width:16px; height:16px; }
-  .topic-tile span{ font-size:10.5px; font-weight:700; color:var(--ink); line-height:1.25; }
+  .topic-row .ic svg{ width:14px; height:14px; }
+  .topic-row span{ font-size:12.5px; font-weight:600; color:var(--ink); }
 
-  #chat{ display:flex; flex-direction:column; gap:13px; }
-  .msg{ display:flex; gap:8px; max-width:100%; }
+  /* main chat panel */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    display:flex;
+    flex-direction:column;
+    min-height:640px;
+    overflow:hidden;
+  }
+  .panel-head{
+    padding:18px 22px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .panel-head h1{ margin:0 0 3px; font-size:16px; font-weight:800; }
+  .panel-head p{ margin:0; font-size:12.5px; color:var(--muted); line-height:1.5; max-width:560px; }
+
+  #chat{
+    flex:1;
+    overflow-y:auto;
+    padding:20px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  #chat::-webkit-scrollbar{ width:6px; }
+  #chat::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+  .empty-hint{
+    margin:auto;
+    text-align:center;
+    color:var(--faint);
+    font-size:12.5px;
+    font-weight:600;
+    max-width:280px;
+  }
+  .empty-hint svg{ width:30px; height:30px; margin-bottom:10px; opacity:.5; }
+
+  .msg{ display:flex; gap:9px; max-width:100%; }
   .msg.user{ justify-content:flex-end; }
   .msg.bot{ justify-content:flex-start; }
   .msg-avatar{
-    width:24px; height:24px; border-radius:8px; flex-shrink:0;
+    width:26px; height:26px; border-radius:8px; flex-shrink:0;
     background:linear-gradient(140deg, var(--mint) 0%, #00A8E8 130%);
     display:flex; align-items:center; justify-content:center; margin-top:2px;
   }
-  .msg-avatar svg{ width:12px; height:12px; }
-  .msg-col{ display:flex; flex-direction:column; max-width:82%; }
+  .msg-avatar svg{ width:13px; height:13px; }
+  .msg-col{ display:flex; flex-direction:column; max-width:74%; }
   .msg.user .msg-col{ align-items:flex-end; }
   .bubble{
-    padding:11px 14px;
-    border-radius:16px;
-    font-size:13px;
-    line-height:1.55;
+    padding:11px 15px;
+    border-radius:14px;
+    font-size:13.5px;
+    line-height:1.6;
     white-space:pre-wrap;
     font-weight:500;
   }
   .msg.user .bubble{
-    background:var(--navy);
-    color:#fff;
-    border-bottom-right-radius:5px;
+    background:var(--mint);
+    color:#04211A;
+    font-weight:600;
+    border-bottom-right-radius:4px;
   }
   .msg.bot .bubble{
-    background:var(--page);
+    background:var(--panel-2);
     color:var(--ink);
-    border-bottom-left-radius:5px;
+    border:1px solid var(--line);
+    border-bottom-left-radius:4px;
   }
   .source-link{
     display:inline-flex;
     align-items:center;
-    gap:5px;
-    font-size:11px;
+    gap:6px;
+    font-size:11.5px;
     font-weight:700;
     margin-top:7px;
-    color:var(--mint-dark);
+    color:var(--mint);
     text-decoration:none;
-    padding:5px 11px 5px 5px;
-    background:var(--mint-tint);
+    padding:5px 12px 5px 6px;
+    background:var(--mint-glow);
+    border:1px solid rgba(0,208,156,0.25);
     border-radius:999px;
   }
-  .source-link .dot{ width:6px; height:6px; border-radius:50%; background:var(--mint-dark); flex-shrink:0; margin-left:3px; }
-  .source-link:hover{ background:var(--mint); color:#fff; }
-  .source-link:hover .dot{ background:#fff; }
+  .source-link .dot{ width:6px; height:6px; border-radius:50%; background:var(--mint); flex-shrink:0; margin-left:2px; }
+  .source-link:hover{ background:var(--mint); color:#04211A; }
+  .source-link:hover .dot{ background:#04211A; }
 
   form#askForm{
     display:flex;
     align-items:center;
-    gap:9px;
-    padding:12px 16px 8px;
-    flex-shrink:0;
+    gap:10px;
+    padding:16px 22px;
+    border-top:1px solid var(--line-soft);
   }
   #query{
     flex:1;
-    padding:12px 16px;
-    border-radius:999px;
-    border:1.5px solid var(--line);
-    font-size:13px;
+    padding:13px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    font-size:13.5px;
     font-family:inherit;
     font-weight:500;
     outline:none;
-    background:var(--page);
+    background:var(--bg);
     color:var(--ink);
   }
   #query::placeholder{ color:var(--faint); }
-  #query:focus{ border-color:var(--mint); background:#fff; box-shadow:0 0 0 4px rgba(0,208,156,0.12); }
+  #query:focus{ border-color:var(--mint); box-shadow:0 0 0 3px var(--mint-glow); }
   button[type="submit"]{
-    width:40px; height:40px; flex-shrink:0;
-    background:linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
-    color:#fff; border:none; border-radius:50%; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 14px rgba(0,208,156,.35);
-    transition:transform .12s;
+    padding:0 20px;
+    height:44px;
+    flex-shrink:0;
+    background:var(--mint);
+    color:#04211A;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:800;
+    font-size:13px;
+    display:flex; align-items:center; gap:7px;
+    transition:background .12s;
   }
-  button[type="submit"]:hover{ transform:scale(1.07); }
-  button[type="submit"] svg{ width:16px; height:16px; }
+  button[type="submit"]:hover{ background:var(--mint-dim); }
+  button[type="submit"] svg{ width:15px; height:15px; }
 
   .foot-note{
     text-align:center;
-    font-size:10px;
+    font-size:10.5px;
     font-weight:600;
     color:var(--faint);
-    padding:0 16px 14px;
-    letter-spacing:.01em;
+    padding:0 22px 16px;
   }
   .foot-note b{ color:var(--muted); }
 
-  @media (max-width: 460px){
-    body{ padding:0; align-items:stretch; }
-    .screen{ max-width:100%; height:100vh; border-radius:0; box-shadow:none; border:none; }
+  @media (max-width: 860px){
+    .wrap{ grid-template-columns:1fr; }
+    .rail{ position:static; flex-direction:row; overflow-x:auto; }
+    .rail-card{ min-width:220px; }
   }
 </style>
 </head>
 <body>
-    <div class="screen">
-      <div class="appbar">
-        <div class="avatar">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 16L9 11L13 15L20 7" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H20V12" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="appbar-title">
-          <div class="name">Facts Assistant</div>
-          <div class="tag">HDFC Mutual Fund · verified sources only</div>
+  <div class="topbar">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 16L9 11L13 15L20 7" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H20V12" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="brand">Facts Assistant</div>
+    <div class="navlinks">
+      <span class="active">HDFC Mutual Fund</span>
+      <span>Large Cap</span>
+      <span>Flexi Cap</span>
+      <span>ELSS Tax Saver</span>
+      <span>Mid Cap</span>
+    </div>
+    <div class="right">
+      <div class="verified-pill"><span class="dot"></span>Verified sources only</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="rail">
+      <div class="rail-card">
+        <h3>HDFC Mutual Fund</h3>
+        <p>4 schemes scoped for this assistant.</p>
+        <div class="scheme-list">
+          <div>HDFC Large Cap Fund</div>
+          <div>HDFC Flexi Cap Fund</div>
+          <div>HDFC ELSS Tax Saver</div>
+          <div>HDFC Mid Cap Fund</div>
         </div>
       </div>
-
-      <div class="scroll">
-        <div class="hero">
-          <h2>Hi! Ask me a fund fact 👋</h2>
-          <p>Expense ratio, exit load, SIP minimums, lock-in, riskometer & more — every answer cites its official source.</p>
+      <div class="rail-card">
+        <div class="rail-section-label">Quick questions</div>
+        <div class="topic-row" data-q="Expense ratio of HDFC Flexi Cap Fund?">
+          <div class="ic" style="background:var(--chip1)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7H9.5C8.12 7 7 8.12 7 9.5S8.12 12 9.5 12H14.5C15.88 12 17 13.12 17 14.5S15.88 17 14.5 17H7" stroke="var(--chip1-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <span>Expense Ratio</span>
         </div>
-
-        <div class="section-label">Quick questions</div>
-        <div class="topic-grid">
-          <div class="topic-tile" data-q="Expense ratio of HDFC Flexi Cap Fund?">
-            <div class="ic" style="background:var(--chip1)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7H9.5C8.12 7 7 8.12 7 9.5S8.12 12 9.5 12H14.5C15.88 12 17 13.12 17 14.5S15.88 17 14.5 17H7" stroke="var(--chip1-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span>Expense Ratio</span>
-          </div>
-          <div class="topic-tile" data-q="What is the lock-in for HDFC ELSS Tax Saver?">
-            <div class="ic" style="background:var(--chip4)"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="var(--chip4-ic)" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="var(--chip4-ic)" stroke-width="2"/></svg></div>
-            <span>ELSS Lock-in</span>
-          </div>
-          <div class="topic-tile" data-q="How do I download my capital gains statement?">
-            <div class="ic" style="background:var(--chip2)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="var(--chip2-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17V19a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="var(--chip2-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span>Statement</span>
-          </div>
-          <div class="topic-tile" data-q="Exit load of HDFC Large Cap Fund?">
-            <div class="ic" style="background:var(--chip3)"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="var(--chip3-ic)" stroke-width="2"/><path d="M12 8V12L15 14" stroke="var(--chip3-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span>Exit Load</span>
-          </div>
-          <div class="topic-tile" data-q="Riskometer of HDFC Mid Cap Fund?">
-            <div class="ic" style="background:var(--chip5)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20C4 12 8 7 12 7C16 7 20 12 20 20" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/><path d="M12 7V11L15 13" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
-            <span>Riskometer</span>
-          </div>
-          <div class="topic-tile" data-q="Benchmark of HDFC Flexi Cap Fund?">
-            <div class="ic" style="background:var(--chip6)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V10M10 19V5M16 19V13M22 19H2" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <span>Benchmark</span>
-          </div>
+        <div class="topic-row" data-q="What is the lock-in for HDFC ELSS Tax Saver?">
+          <div class="ic" style="background:var(--chip4)"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="var(--chip4-ic)" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="var(--chip4-ic)" stroke-width="2"/></svg></div>
+          <span>ELSS Lock-in</span>
         </div>
-
-        <div id="chat"></div>
+        <div class="topic-row" data-q="Exit load of HDFC Large Cap Fund?">
+          <div class="ic" style="background:var(--chip3)"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="var(--chip3-ic)" stroke-width="2"/><path d="M12 8V12L15 14" stroke="var(--chip3-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <span>Exit Load</span>
+        </div>
+        <div class="topic-row" data-q="Minimum SIP for HDFC Mid Cap Fund?">
+          <div class="ic" style="background:var(--chip2)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8V16M8 12H16" stroke="var(--chip2-ic)" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="8" stroke="var(--chip2-ic)" stroke-width="2"/></svg></div>
+          <span>Minimum SIP</span>
+        </div>
+        <div class="topic-row" data-q="Riskometer of HDFC Mid Cap Fund?">
+          <div class="ic" style="background:var(--chip5)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20C4 12 8 7 12 7C16 7 20 12 20 20" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/><path d="M12 7V11L15 13" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <span>Riskometer</span>
+        </div>
+        <div class="topic-row" data-q="Benchmark of HDFC Flexi Cap Fund?">
+          <div class="ic" style="background:var(--chip6)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V10M10 19V5M16 19V13M22 19H2" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span>Benchmark</span>
+        </div>
+        <div class="topic-row" data-q="How do I download my capital gains statement?">
+          <div class="ic" style="background:var(--chip6)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17V19a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <span>Statement</span>
+        </div>
       </div>
+    </div>
 
+    <div class="panel">
+      <div class="panel-head">
+        <h1>Ask about a scheme fact</h1>
+        <p>Expense ratio, exit load, minimum SIP, ELSS lock-in, riskometer, benchmark, or statement downloads — every answer cites its official source. No opinions, no advice, no PII stored.</p>
+      </div>
+      <div id="chat">
+        <div class="empty-hint">
+          <svg viewBox="0 0 24 24" fill="none" style="margin:0 auto;display:block;"><path d="M4 16L9 11L13 15L20 7" stroke="#5C6470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H20V12" stroke="#5C6470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Pick a quick question on the left, or type your own below.
+        </div>
+      </div>
       <form id="askForm">
-        <input id="query" type="text" placeholder="Ask about a scheme…" autocomplete="off" />
+        <input id="query" type="text" placeholder="e.g. Expense ratio of HDFC Large Cap Fund?" autocomplete="off" />
         <button type="submit" aria-label="Send">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12L20 4L14 20L11 13L4 12Z" fill="white"/></svg>
+          Ask
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12L20 4L14 20L11 13L4 12Z" fill="#04211A"/></svg>
         </button>
       </form>
       <div class="foot-note"><b>Facts-only.</b> No investment advice.</div>
     </div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>

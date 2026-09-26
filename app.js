@@ -206,14 +206,25 @@ function renderMessage(role, text, link) {
   wrap.scrollIntoView({ behavior: "smooth", block: "end" });
 }
 
+function clearEmptyHint() {
+  const hint = document.querySelector(".empty-hint");
+  if (hint) hint.remove();
+}
+
 function handleSend(text) {
+  clearEmptyHint();
   renderMessage("user", text, null);
+  if (!CORPUS) {
+    setTimeout(() => renderMessage("bot", "Still loading fund data — please try again in a second.", null), 200);
+    return;
+  }
   const res = answer(text);
   setTimeout(() => renderMessage("bot", res.text, res.link), 200);
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-  await loadCorpus();
+// Wire up UI interaction immediately — never let a slow/failed corpus
+// fetch block button clicks or form submission from working.
+window.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("query");
   const form = document.getElementById("askForm");
   form.addEventListener("submit", (e) => {
@@ -223,9 +234,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     handleSend(v);
     input.value = "";
   });
-  document.querySelectorAll(".topic-tile").forEach((tile) => {
+  document.querySelectorAll(".topic-row, .topic-tile, .example-chip").forEach((tile) => {
     tile.addEventListener("click", () => {
-      handleSend(tile.dataset.q);
+      handleSend(tile.dataset.q || tile.textContent);
     });
+  });
+  loadCorpus().catch((err) => {
+    console.error("Failed to load schemes.json", err);
   });
 });
