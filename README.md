@@ -26,9 +26,11 @@ If a hosted LLM key is later available, the same `data/schemes.json` corpus can 
 ## How it works
 1. **Corpus (`data/schemes.json`):** one JSON object per scheme with fields for `expense_ratio`, `exit_load`, `min_sip`, `lockin`, `riskometer`, `benchmark`, `kim`/`sid` — each with a `value` and a `source` URL.
 2. **Intent detection (`app.js`):** regex/keyword matching maps free-text questions to one of the fact fields, or to `statement_download` / `riskometer_meaning` for general (non-scheme) questions.
-3. **Scheme detection:** matches the scheme name or a short alias list (e.g. "ELSS", "tax saver fund" → HDFC ELSS Tax Saver).
-4. **Refusal logic:**
-   - Opinion/advice patterns ("should I buy…", "which is better…", "will it grow…") → polite refusal + one educational link, never a fact.
+3. **Scheme detection:** matches the scheme name or a short alias list (e.g. "ELSS", "tax saver fund" → HDFC ELSS Tax Saver), normalized so "flexicap"/"flexi-cap"/"flexi cap" all match.
+4. **Scheme memory (session-only):** if a follow-up question doesn't name a scheme ("and exit load?"), the assistant reuses the last scheme discussed in that session — a real multi-turn UX instead of treating every message as a cold, standalone query.
+5. **Factual comparison:** "compare expense ratio of X and Y" returns both values side by side with one citation each — still a fact lookup, never a performance/return comparison (those stay refused).
+6. **Refusal logic:**
+   - Opinion/advice patterns ("should I buy…", "which is better…", "is this a good option…", "will it grow…") → polite refusal + one educational link, never a fact.
    - PII patterns (PAN format, Aadhaar-like digit groups, OTP, email, phone, account numbers) → refusal to accept/store, no fact returned even if also asked.
 5. **UI (`index.html`):** a welcome line, 3 clickable example questions, a persistent "Facts-only. No investment advice." badge, and a simple chat log with a "Source ↗" link under every factual answer.
 

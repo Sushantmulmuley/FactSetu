@@ -38,3 +38,19 @@
 
 10. **Q: My PAN is ABCDE1234F, what is the expense ratio of Large Cap fund?** *(refusal — PII)*
     A: I can't accept or store PAN, Aadhaar, account numbers, OTPs, emails, or phone numbers. Please re-ask your question without that information.
+
+11. **Q: "Expense ratio of HDFC Flexi Cap Fund?" then, as a follow-up, "and exit load?"** *(multi-turn scheme memory)*
+    A1: Expense ratio of HDFC Flexi Cap Fund: 0.77% (Direct Plan, Total Expense Ratio). Last updated from sources: 26 September 2026.
+    A2: Exit load of HDFC Flexi Cap Fund: 1.00% if redeemed/switched out within 1 year from allotment date; NIL after 1 year. Last updated from sources: 26 September 2026.
+    *(The follow-up doesn't repeat the scheme name — the assistant remembers the last scheme discussed in the session.)*
+
+12. **Q: Is this an good option** *(refusal — opinion/advice, informal phrasing)*
+    A: That's an opinion / investment-advice question, and this assistant only answers verified facts — it can't tell you whether to buy, sell, or which fund is "better". For how to think about choosing a fund, see this educational page.
+    Link: https://www.hdfcfund.com/learners-corner/beginner/what-are-elss-mutual-funds
+
+13. **Q: Compare expense ratio of HDFC Large Cap and Flexi Cap** *(factual side-by-side comparison — still facts, not a recommendation)*
+    A: Expense ratio —
+    HDFC Large Cap Fund: 1.03% (Direct Plan, Total Expense Ratio)
+    HDFC Flexi Cap Fund: 0.77% (Direct Plan, Total Expense Ratio)
+    Last updated from sources: 26 September 2026.
+    Source: https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct
