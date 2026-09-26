@@ -59,8 +59,11 @@
   .topbar .navlinks{ display:flex; gap:26px; flex:1; }
   .topbar .navlinks span{
     font-size:13.5px; font-weight:600; color:var(--muted);
-    padding:20px 0; cursor:default;
+    padding:20px 0; cursor:pointer;
+    border-bottom:2px solid transparent;
+    transition:color .12s;
   }
+  .topbar .navlinks span:hover{ color:var(--ink); }
   .topbar .navlinks span.active{ color:var(--ink); border-bottom:2px solid var(--mint); }
   .topbar .right{ display:flex; align-items:center; gap:14px; }
   .verified-pill{
@@ -197,7 +200,28 @@
     background:var(--panel-2);
     color:var(--ink);
     border:1px solid var(--line);
+    border-left:3px solid var(--line);
     border-bottom-left-radius:4px;
+  }
+  .msg.bot .bubble.bubble--fact{ border-left-color:var(--mint); }
+  .msg.bot .bubble.bubble--refuse{ border-left-color:#F4924A; }
+  .msg.bot .bubble.bubble--blocked{ border-left-color:var(--red); }
+  .msg.bot .bubble.bubble--fallback{ border-left-color:#6E85FF; }
+
+  .typing-bubble{
+    display:flex; align-items:center; gap:4px;
+    padding:14px 16px;
+  }
+  .dotflash{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--faint);
+    animation:dotflash 1.1s infinite ease-in-out;
+  }
+  .dotflash:nth-child(2){ animation-delay:.15s; }
+  .dotflash:nth-child(3){ animation-delay:.3s; }
+  @keyframes dotflash{
+    0%, 60%, 100%{ opacity:.3; transform:translateY(0); }
+    30%{ opacity:1; transform:translateY(-2px); }
   }
   .source-link{
     display:inline-flex;
@@ -264,9 +288,25 @@
   }
   .foot-note b{ color:var(--muted); }
 
+  .reset-btn{
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    width:100%;
+    background:transparent;
+    border:1px dashed var(--line);
+    color:var(--faint);
+    font-family:inherit;
+    font-size:12px; font-weight:700;
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:color .12s, border-color .12s;
+  }
+  .reset-btn svg{ width:13px; height:13px; }
+  .reset-btn:hover{ color:var(--ink); border-color:var(--muted); }
+
   @media (max-width: 860px){
     .wrap{ grid-template-columns:1fr; }
-    .rail{ position:static; flex-direction:row; overflow-x:auto; }
+    .rail{ position:static; flex-direction:row; flex-wrap:wrap; overflow-x:auto; }
     .rail-card{ min-width:220px; }
   }
 </style>
@@ -278,11 +318,11 @@
     </div>
     <div class="brand">Facts Assistant</div>
     <div class="navlinks">
-      <span class="active">HDFC Mutual Fund</span>
-      <span>Large Cap</span>
-      <span>Flexi Cap</span>
-      <span>ELSS Tax Saver</span>
-      <span>Mid Cap</span>
+      <span class="active" data-scheme-id="">HDFC Mutual Fund</span>
+      <span data-scheme-id="large_cap">Large Cap</span>
+      <span data-scheme-id="flexi_cap">Flexi Cap</span>
+      <span data-scheme-id="elss_tax_saver">ELSS Tax Saver</span>
+      <span data-scheme-id="mid_cap">Mid Cap</span>
     </div>
     <div class="right">
       <div class="verified-pill"><span class="dot"></span>Verified sources only</div>
@@ -303,35 +343,39 @@
       </div>
       <div class="rail-card">
         <div class="rail-section-label">Quick questions</div>
-        <div class="topic-row" data-q="Expense ratio of HDFC Flexi Cap Fund?">
+        <div class="topic-row" data-template="Expense ratio of {scheme}?" data-default="HDFC Flexi Cap Fund" data-q="Expense ratio of HDFC Flexi Cap Fund?">
           <div class="ic" style="background:var(--chip1)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7H9.5C8.12 7 7 8.12 7 9.5S8.12 12 9.5 12H14.5C15.88 12 17 13.12 17 14.5S15.88 17 14.5 17H7" stroke="var(--chip1-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Expense Ratio</span>
         </div>
-        <div class="topic-row" data-q="What is the lock-in for HDFC ELSS Tax Saver?">
+        <div class="topic-row" data-template="What is the lock-in for {scheme}?" data-default="HDFC ELSS Tax Saver" data-q="What is the lock-in for HDFC ELSS Tax Saver?">
           <div class="ic" style="background:var(--chip4)"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="var(--chip4-ic)" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="var(--chip4-ic)" stroke-width="2"/></svg></div>
           <span>ELSS Lock-in</span>
         </div>
-        <div class="topic-row" data-q="Exit load of HDFC Large Cap Fund?">
+        <div class="topic-row" data-template="Exit load of {scheme}?" data-default="HDFC Large Cap Fund" data-q="Exit load of HDFC Large Cap Fund?">
           <div class="ic" style="background:var(--chip3)"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="var(--chip3-ic)" stroke-width="2"/><path d="M12 8V12L15 14" stroke="var(--chip3-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Exit Load</span>
         </div>
-        <div class="topic-row" data-q="Minimum SIP for HDFC Mid Cap Fund?">
+        <div class="topic-row" data-template="Minimum SIP for {scheme}?" data-default="HDFC Mid Cap Fund" data-q="Minimum SIP for HDFC Mid Cap Fund?">
           <div class="ic" style="background:var(--chip2)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8V16M8 12H16" stroke="var(--chip2-ic)" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="8" stroke="var(--chip2-ic)" stroke-width="2"/></svg></div>
           <span>Minimum SIP</span>
         </div>
-        <div class="topic-row" data-q="Riskometer of HDFC Mid Cap Fund?">
+        <div class="topic-row" data-template="Riskometer of {scheme}?" data-default="HDFC Mid Cap Fund" data-q="Riskometer of HDFC Mid Cap Fund?">
           <div class="ic" style="background:var(--chip5)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20C4 12 8 7 12 7C16 7 20 12 20 20" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/><path d="M12 7V11L15 13" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Riskometer</span>
         </div>
-        <div class="topic-row" data-q="Benchmark of HDFC Flexi Cap Fund?">
+        <div class="topic-row" data-template="Benchmark of {scheme}?" data-default="HDFC Flexi Cap Fund" data-q="Benchmark of HDFC Flexi Cap Fund?">
           <div class="ic" style="background:var(--chip6)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V10M10 19V5M16 19V13M22 19H2" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span>Benchmark</span>
         </div>
-        <div class="topic-row" data-q="How do I download my capital gains statement?">
+        <div class="topic-row" data-template="How do I download my capital gains statement?" data-default="" data-q="How do I download my capital gains statement?">
           <div class="ic" style="background:var(--chip6)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17V19a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Statement</span>
         </div>
       </div>
+      <button id="resetChat" class="reset-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 4V9H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.6 15A8 8 0 1 0 6 6.3L4 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Reset conversation
+      </button>
     </div>
 
     <div class="panel">
