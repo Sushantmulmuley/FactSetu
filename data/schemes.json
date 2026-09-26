@@ -1,0 +1,160 @@
+{
+  "amc": "HDFC Mutual Fund",
+  "last_updated_from_sources": "26 September 2026",
+  "schemes": [
+    {
+      "id": "large_cap",
+      "name": "HDFC Large Cap Fund",
+      "aliases": ["large cap fund", "large cap", "hdfc large cap"],
+      "category": "Equity - Large Cap Fund",
+      "facts": {
+        "expense_ratio": {
+          "value": "1.03% (Direct Plan, Total Expense Ratio)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct"
+        },
+        "exit_load": {
+          "value": "1.00% if redeemed/switched out within 1 year from allotment date; NIL after 1 year",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct"
+        },
+        "min_sip": {
+          "value": "₹100 per instalment",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct"
+        },
+        "lockin": {
+          "value": "No statutory lock-in (it is not an ELSS scheme). The 1-year exit load period still applies.",
+          "source": "https://files.hdfcfund.com/s3fs-public/KIM/2025-05/KIM%20-%20HDFC%20Large%20Cap%20Fund%20dated%20May%2030,%202025.pdf"
+        },
+        "riskometer": {
+          "value": "Very High",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct"
+        },
+        "benchmark": {
+          "value": "NIFTY 100 (Total Return Index)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct"
+        },
+        "kim": {
+          "value": "Key Information Memorandum dated May 30, 2025",
+          "source": "https://files.hdfcfund.com/s3fs-public/KIM/2025-05/KIM%20-%20HDFC%20Large%20Cap%20Fund%20dated%20May%2030,%202025.pdf"
+        }
+      }
+    },
+    {
+      "id": "flexi_cap",
+      "name": "HDFC Flexi Cap Fund",
+      "aliases": ["flexi cap fund", "flexi cap", "hdfc flexi cap", "hdfc equity fund"],
+      "category": "Equity - Flexi Cap Fund",
+      "facts": {
+        "expense_ratio": {
+          "value": "0.77% (Direct Plan, Total Expense Ratio)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct"
+        },
+        "exit_load": {
+          "value": "1.00% if redeemed/switched out within 1 year from allotment date; NIL after 1 year",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct"
+        },
+        "min_sip": {
+          "value": "₹100 per instalment",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct"
+        },
+        "lockin": {
+          "value": "No statutory lock-in (it is not an ELSS scheme). The 1-year exit load period still applies.",
+          "source": "https://files.hdfcfund.com/s3fs-public/SID/2025-11/SID%20-%20HDFC%20Flexi%20Cap%20Fund%20dated%20November%2021,%202025_0.pdf"
+        },
+        "riskometer": {
+          "value": "Very High",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct"
+        },
+        "benchmark": {
+          "value": "NIFTY 500 (Total Return Index)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct"
+        },
+        "sid": {
+          "value": "Scheme Information Document dated November 21, 2025",
+          "source": "https://files.hdfcfund.com/s3fs-public/SID/2025-11/SID%20-%20HDFC%20Flexi%20Cap%20Fund%20dated%20November%2021,%202025_0.pdf"
+        }
+      }
+    },
+    {
+      "id": "elss_tax_saver",
+      "name": "HDFC ELSS Tax Saver",
+      "aliases": ["elss", "elss tax saver", "tax saver fund", "hdfc elss", "tax saving fund"],
+      "category": "Equity - ELSS (Equity Linked Savings Scheme)",
+      "facts": {
+        "expense_ratio": {
+          "value": "1.19% (Direct Plan, Total Expense Ratio)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct"
+        },
+        "exit_load": {
+          "value": "NIL (no exit load — the 3-year statutory lock-in already restricts early redemption)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct"
+        },
+        "min_sip": {
+          "value": "₹500 per instalment",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct"
+        },
+        "lockin": {
+          "value": "3 years from the date of allotment of each instalment (statutory lock-in under Section 80C)",
+          "source": "https://files.hdfcfund.com/s3fs-public/SID/2024-11/SID%20-%20HDFC%20ELSS%20Tax%20Saver%20Fund%20dated%20November%2021,%202024.pdf"
+        },
+        "riskometer": {
+          "value": "Very High",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct"
+        },
+        "benchmark": {
+          "value": "NIFTY 500 (Total Return Index)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct"
+        },
+        "sid": {
+          "value": "Scheme Information Document dated November 21, 2024",
+          "source": "https://files.hdfcfund.com/s3fs-public/SID/2024-11/SID%20-%20HDFC%20ELSS%20Tax%20Saver%20Fund%20dated%20November%2021,%202024.pdf"
+        }
+      }
+    },
+    {
+      "id": "mid_cap",
+      "name": "HDFC Mid Cap Fund",
+      "aliases": ["mid cap fund", "mid cap", "hdfc mid cap", "hdfc mid-cap opportunities fund"],
+      "category": "Equity - Mid Cap Fund",
+      "facts": {
+        "expense_ratio": {
+          "value": "0.75% (Direct Plan, Total Expense Ratio)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct"
+        },
+        "exit_load": {
+          "value": "1.00% if redeemed/switched out within 1 year from allotment date; NIL after 1 year",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct"
+        },
+        "min_sip": {
+          "value": "₹100 per instalment",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct"
+        },
+        "lockin": {
+          "value": "No statutory lock-in (it is not an ELSS scheme). The 1-year exit load period still applies.",
+          "source": "https://files.hdfcfund.com/s3fs-public/KIM/2025-11/KIM%20-%20HDFC%20Mid%20Cap%20Fund%20dated%20November%2021,%202025_1.pdf"
+        },
+        "riskometer": {
+          "value": "Very High",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct"
+        },
+        "benchmark": {
+          "value": "NIFTY Midcap 150 (Total Return Index)",
+          "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct"
+        },
+        "kim": {
+          "value": "Key Information Memorandum dated November 21, 2025",
+          "source": "https://files.hdfcfund.com/s3fs-public/KIM/2025-11/KIM%20-%20HDFC%20Mid%20Cap%20Fund%20dated%20November%2021,%202025_1.pdf"
+        }
+      }
+    }
+  ],
+  "general": {
+    "statement_download": {
+      "value": "You can get a capital-gains statement for HDFC Mutual Fund investments in three ways: (1) through HDFC Mutual Fund's own website using your PAN/registered email, (2) through your RTA — CAMS or KFintech — using your PAN and registered email, or (3) through the platform/distributor you invested via. Statements are usually available after the financial year closes.",
+      "source": "https://www.hdfcfund.com/learn/blog/how-get-capital-gain-statement-mutual-fund-schemes-india"
+    },
+    "riskometer_meaning": {
+      "value": "The riskometer is a mandatory SEBI-prescribed 6-level risk gauge (Low, Low to Moderate, Moderate, Moderately High, High, Very High) shown on every scheme document so investors can see the scheme's risk level at a glance before investing.",
+      "source": "https://investor.sebi.gov.in/riskometer.html"
+    }
+  }
+}
