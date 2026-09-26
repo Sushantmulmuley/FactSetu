@@ -162,22 +162,46 @@ function answer(query) {
 }
 
 // ---- UI wiring ----
+function sourceDomain(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch (e) {
+    return "source";
+  }
+}
+
+const BOT_AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 16L9 11L13 15L20 7" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H20V12" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
 function renderMessage(role, text, link) {
   const wrap = document.createElement("div");
   wrap.className = "msg " + role;
+
+  if (role === "bot") {
+    const av = document.createElement("div");
+    av.className = "msg-avatar";
+    av.innerHTML = BOT_AVATAR_SVG;
+    wrap.appendChild(av);
+  }
+
+  const col = document.createElement("div");
+  col.className = "msg-col";
+
   const bubble = document.createElement("div");
   bubble.className = "bubble";
   bubble.textContent = text;
-  wrap.appendChild(bubble);
+  col.appendChild(bubble);
+
   if (link) {
     const a = document.createElement("a");
     a.href = link;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     a.className = "source-link";
-    a.textContent = "Source ↗";
-    wrap.appendChild(a);
+    a.innerHTML = `${sourceDomain(link)}<span class="dot"></span>`;
+    col.appendChild(a);
   }
+
+  wrap.appendChild(col);
   document.getElementById("chat").appendChild(wrap);
   wrap.scrollIntoView({ behavior: "smooth", block: "end" });
 }
@@ -185,7 +209,7 @@ function renderMessage(role, text, link) {
 function handleSend(text) {
   renderMessage("user", text, null);
   const res = answer(text);
-  setTimeout(() => renderMessage("bot", res.text, res.link), 150);
+  setTimeout(() => renderMessage("bot", res.text, res.link), 200);
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -199,9 +223,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     handleSend(v);
     input.value = "";
   });
-  document.querySelectorAll(".example-chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      handleSend(chip.textContent);
+  document.querySelectorAll(".topic-tile").forEach((tile) => {
+    tile.addEventListener("click", () => {
+      handleSend(tile.dataset.q);
     });
   });
 });
