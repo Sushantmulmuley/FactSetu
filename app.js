@@ -504,7 +504,7 @@ function renderAnswer(body, res, n, replay) {
   const k = el("span", `kind kind--${kind}`);
   k.innerHTML = `<svg viewBox="0 0 12 12" fill="none" aria-hidden="true">${KIND_ICONS[kind]}</svg>`;
   k.append(KIND_LABELS[kind]);
-  who.append(av, el("b", null, "VerifiedFund"), k);
+  who.append(av, el("b", null, "FactSetu"), k);
   reply.append(who);
 
   const msg = el("div", "msg");
@@ -604,7 +604,7 @@ function emptyLog() {
 }
 
 // ---- Session memory: survives a reload of this tab, never leaves the browser ----
-const SESSION_KEY = "verifiedfund-session";
+const SESSION_KEY = "factsetu-session";
 let log = []; // [{ q, res }] — q is already masked
 
 function saveSession() {
@@ -677,7 +677,7 @@ function paintTable(freshIntent) {
     const v = row.querySelector(".v");
     const hit = scheme && known[`${scheme.id}|${row.dataset.intent}`];
     v.className = hit ? "v" : "v empty";
-    v.textContent = hit ? splitFigure(hit.value)[0] : scheme ? "Ask" : `Ask for ${row.dataset.default.replace(/^HDFC /, "")}`;
+    v.textContent = hit ? splitFigure(hit.value)[0] : "Ask";
     if (hit) {
       const s = mark(hit.n);
       v.append(s);
