@@ -95,6 +95,7 @@
   }
   .tab:hover{ color:var(--ink); background:rgba(14,34,64,.06); }
   .tab[aria-pressed="true"]{ color:#fff; background:var(--navy); font-weight:700; }
+  .tab .short{ display:none; }
   .tab:focus-visible{ outline-offset:-3px; }
 
   /* ---------- Layout ---------- */
@@ -307,8 +308,14 @@
     .wordmark b{ font-size:16px; }
     .policy{ font-size:12px; text-align:right; }
     .tabs-wrap{ padding-top:6px; }
-    .tabs{ gap:2px; scroll-padding:0 16px; }
-    .tab{ padding:8px 14px; font-size:14px; }
+    .tabs{
+      display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:2px;
+      margin:0 16px; padding:4px; overflow:visible;
+      background:var(--sheet); border-radius:999px; box-shadow:var(--soft);
+    }
+    .tab{ margin:0; padding:9px 0; font-size:14px; text-align:center; }
+    .tab .long{ display:none; }
+    .tab .short{ display:inline; }
     .page{ grid-template-columns:minmax(0,1fr); gap:18px; padding-top:10px; }
     .facts, .log{ min-width:0; }
 
@@ -376,11 +383,11 @@
 
   <nav class="tabs-wrap" aria-label="Choose a scheme">
     <div class="tabs">
-      <button class="tab" type="button" data-scheme-id="" aria-pressed="true">All schemes</button>
-      <button class="tab" type="button" data-scheme-id="large_cap" aria-pressed="false">Large Cap</button>
-      <button class="tab" type="button" data-scheme-id="flexi_cap" aria-pressed="false">Flexi Cap</button>
-      <button class="tab" type="button" data-scheme-id="elss_tax_saver" aria-pressed="false">ELSS Tax Saver</button>
-      <button class="tab" type="button" data-scheme-id="mid_cap" aria-pressed="false">Mid Cap</button>
+      <button class="tab" type="button" data-scheme-id="" aria-pressed="true" aria-label="All schemes"><span class="long">All schemes</span><span class="short" aria-hidden="true">All</span></button>
+      <button class="tab" type="button" data-scheme-id="large_cap" aria-pressed="false" aria-label="Large Cap"><span class="long">Large Cap</span><span class="short" aria-hidden="true">Large</span></button>
+      <button class="tab" type="button" data-scheme-id="flexi_cap" aria-pressed="false" aria-label="Flexi Cap"><span class="long">Flexi Cap</span><span class="short" aria-hidden="true">Flexi</span></button>
+      <button class="tab" type="button" data-scheme-id="elss_tax_saver" aria-pressed="false" aria-label="ELSS Tax Saver"><span class="long">ELSS Tax Saver</span><span class="short" aria-hidden="true">ELSS</span></button>
+      <button class="tab" type="button" data-scheme-id="mid_cap" aria-pressed="false" aria-label="Mid Cap"><span class="long">Mid Cap</span><span class="short" aria-hidden="true">Mid</span></button>
     </div>
   </nav>
 
