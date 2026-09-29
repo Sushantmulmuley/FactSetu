@@ -406,7 +406,7 @@ const ASK = {
   riskometer: ["Riskometer", "Riskometer of {s}?"],
   benchmark: ["Benchmark", "Benchmark of {s}?"],
 };
-const BOT_MARK = `<svg viewBox="0 0 22 22" fill="none" aria-hidden="true"><rect x="1" y="1" width="20" height="20" stroke="#fff" stroke-width="1.8"/><path d="M1 7.5h20M8 7.5V21" stroke="#fff" stroke-width="1.8"/><path d="M11 14.5l2 2 4-4.5" stroke="#8FB3F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const BOT_MARK = `<svg viewBox="8 9 32 31" fill="none" aria-hidden="true"><path d="M13 10H35a4 4 0 0 1 4 4V29a4 4 0 0 1-4 4H21L14 39V33H13a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4Z" fill="#fff"/><path d="M15.5 27A8.5 8.5 0 0 1 32.5 27" stroke="#0E2240" stroke-width="3.5" stroke-linecap="round"/><circle cx="32.5" cy="27" r="3.2" fill="#1D5FD1"/></svg>`;
 
 // Builds a sentence element, with the value set in bold.
 function sentence(tpl, scheme, value) {
