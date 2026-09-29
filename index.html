@@ -6,7 +6,7 @@
 <title>Facts Assistant · HDFC Mutual Fund</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --mint:#00D09C;
@@ -32,10 +32,17 @@
   html,body{height:100%;}
   body{
     margin:0;
-    font-family:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family:"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background:var(--bg);
     color:var(--ink);
+    scrollbar-width:thin;
+    scrollbar-color:var(--line) transparent;
   }
+  ::selection{ background:var(--mint); color:#04211A; }
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  :focus-visible{ outline:2px solid var(--mint); outline-offset:2px; }
 
   /* top navbar, like a real Groww header */
   .topbar{
@@ -127,6 +134,7 @@
     transition:background .12s;
   }
   .topic-row:hover{ background:var(--panel-2); }
+  .topic-row:focus-visible{ background:var(--panel-2); outline-offset:-1px; }
   .topic-row .ic{
     width:28px; height:28px; border-radius:8px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
@@ -171,7 +179,11 @@
   }
   .empty-hint svg{ width:30px; height:30px; margin-bottom:10px; opacity:.5; }
 
-  .msg{ display:flex; gap:9px; max-width:100%; }
+  @keyframes msgIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .msg{ display:flex; gap:9px; max-width:100%; animation:msgIn .28s cubic-bezier(0.16,1,0.3,1) both; }
   .msg.user{ justify-content:flex-end; }
   .msg.bot{ justify-content:flex-start; }
   .msg-avatar{
@@ -189,6 +201,7 @@
     line-height:1.6;
     white-space:pre-wrap;
     font-weight:500;
+    font-variant-numeric:tabular-nums;
   }
   .msg.user .bubble{
     background:var(--mint);
@@ -200,13 +213,25 @@
     background:var(--panel-2);
     color:var(--ink);
     border:1px solid var(--line);
-    border-left:3px solid var(--line);
     border-bottom-left-radius:4px;
   }
-  .msg.bot .bubble.bubble--fact{ border-left-color:var(--mint); }
-  .msg.bot .bubble.bubble--refuse{ border-left-color:#F4924A; }
-  .msg.bot .bubble.bubble--blocked{ border-left-color:var(--red); }
-  .msg.bot .bubble.bubble--fallback{ border-left-color:#6E85FF; }
+  .bubble-tag{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+    color:var(--muted);
+  }
+  .bubble-tag .dot{ width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; }
+  .bubble-tag--fact{ color:var(--mint); }
+  .bubble-tag--refuse{ color:#F4924A; }
+  .bubble-tag--blocked{ color:var(--red); }
+  .bubble-tag--fallback{ color:#6E85FF; }
+  .bubble-text{ display:block; }
 
   .typing-bubble{
     display:flex; align-items:center; gap:4px;
@@ -261,6 +286,7 @@
     color:var(--ink);
   }
   #query::placeholder{ color:var(--faint); }
+  #query{ caret-color:var(--mint); }
   #query:focus{ border-color:var(--mint); box-shadow:0 0 0 3px var(--mint-glow); }
   button[type="submit"]{
     padding:0 20px;
@@ -318,11 +344,11 @@
     </div>
     <div class="brand">Facts Assistant</div>
     <div class="navlinks">
-      <span class="active" data-scheme-id="">HDFC Mutual Fund</span>
-      <span data-scheme-id="large_cap">Large Cap</span>
-      <span data-scheme-id="flexi_cap">Flexi Cap</span>
-      <span data-scheme-id="elss_tax_saver">ELSS Tax Saver</span>
-      <span data-scheme-id="mid_cap">Mid Cap</span>
+      <span class="active" data-scheme-id="" tabindex="0" role="button">HDFC Mutual Fund</span>
+      <span data-scheme-id="large_cap" tabindex="0" role="button">Large Cap</span>
+      <span data-scheme-id="flexi_cap" tabindex="0" role="button">Flexi Cap</span>
+      <span data-scheme-id="elss_tax_saver" tabindex="0" role="button">ELSS Tax Saver</span>
+      <span data-scheme-id="mid_cap" tabindex="0" role="button">Mid Cap</span>
     </div>
     <div class="right">
       <div class="verified-pill"><span class="dot"></span>Verified sources only</div>
@@ -343,31 +369,31 @@
       </div>
       <div class="rail-card">
         <div class="rail-section-label">Quick questions</div>
-        <div class="topic-row" data-template="Expense ratio of {scheme}?" data-default="HDFC Flexi Cap Fund" data-q="Expense ratio of HDFC Flexi Cap Fund?">
+        <div class="topic-row" tabindex="0" role="button" data-template="Expense ratio of {scheme}?" data-default="HDFC Flexi Cap Fund" data-q="Expense ratio of HDFC Flexi Cap Fund?">
           <div class="ic" style="background:var(--chip1)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7H9.5C8.12 7 7 8.12 7 9.5S8.12 12 9.5 12H14.5C15.88 12 17 13.12 17 14.5S15.88 17 14.5 17H7" stroke="var(--chip1-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Expense Ratio</span>
         </div>
-        <div class="topic-row" data-template="What is the lock-in for {scheme}?" data-default="HDFC ELSS Tax Saver" data-q="What is the lock-in for HDFC ELSS Tax Saver?">
+        <div class="topic-row" tabindex="0" role="button" data-template="What is the lock-in for {scheme}?" data-default="HDFC ELSS Tax Saver" data-q="What is the lock-in for HDFC ELSS Tax Saver?">
           <div class="ic" style="background:var(--chip4)"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="var(--chip4-ic)" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="var(--chip4-ic)" stroke-width="2"/></svg></div>
           <span>ELSS Lock-in</span>
         </div>
-        <div class="topic-row" data-template="Exit load of {scheme}?" data-default="HDFC Large Cap Fund" data-q="Exit load of HDFC Large Cap Fund?">
+        <div class="topic-row" tabindex="0" role="button" data-template="Exit load of {scheme}?" data-default="HDFC Large Cap Fund" data-q="Exit load of HDFC Large Cap Fund?">
           <div class="ic" style="background:var(--chip3)"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="var(--chip3-ic)" stroke-width="2"/><path d="M12 8V12L15 14" stroke="var(--chip3-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Exit Load</span>
         </div>
-        <div class="topic-row" data-template="Minimum SIP for {scheme}?" data-default="HDFC Mid Cap Fund" data-q="Minimum SIP for HDFC Mid Cap Fund?">
+        <div class="topic-row" tabindex="0" role="button" data-template="Minimum SIP for {scheme}?" data-default="HDFC Mid Cap Fund" data-q="Minimum SIP for HDFC Mid Cap Fund?">
           <div class="ic" style="background:var(--chip2)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8V16M8 12H16" stroke="var(--chip2-ic)" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="8" stroke="var(--chip2-ic)" stroke-width="2"/></svg></div>
           <span>Minimum SIP</span>
         </div>
-        <div class="topic-row" data-template="Riskometer of {scheme}?" data-default="HDFC Mid Cap Fund" data-q="Riskometer of HDFC Mid Cap Fund?">
+        <div class="topic-row" tabindex="0" role="button" data-template="Riskometer of {scheme}?" data-default="HDFC Mid Cap Fund" data-q="Riskometer of HDFC Mid Cap Fund?">
           <div class="ic" style="background:var(--chip5)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20C4 12 8 7 12 7C16 7 20 12 20 20" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/><path d="M12 7V11L15 13" stroke="var(--chip5-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Riskometer</span>
         </div>
-        <div class="topic-row" data-template="Benchmark of {scheme}?" data-default="HDFC Flexi Cap Fund" data-q="Benchmark of HDFC Flexi Cap Fund?">
+        <div class="topic-row" tabindex="0" role="button" data-template="Benchmark of {scheme}?" data-default="HDFC Flexi Cap Fund" data-q="Benchmark of HDFC Flexi Cap Fund?">
           <div class="ic" style="background:var(--chip6)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V10M10 19V5M16 19V13M22 19H2" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <span>Benchmark</span>
         </div>
-        <div class="topic-row" data-template="How do I download my capital gains statement?" data-default="" data-q="How do I download my capital gains statement?">
+        <div class="topic-row" tabindex="0" role="button" data-template="How do I download my capital gains statement?" data-default="" data-q="How do I download my capital gains statement?">
           <div class="ic" style="background:var(--chip6)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3V15M12 15L8 11M12 15L16 11" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17V19a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="var(--chip6-ic)" stroke-width="2" stroke-linecap="round"/></svg></div>
           <span>Statement</span>
         </div>
@@ -399,6 +425,6 @@
       <div class="foot-note"><b>Facts-only.</b> No investment advice.</div>
     </div>
   </div>
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

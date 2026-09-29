@@ -242,6 +242,13 @@ function sourceDomain(url) {
 
 const BOT_AVATAR_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M4 16L9 11L13 15L20 7" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H20V12" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
+const BUBBLE_TAG_LABELS = {
+  fact: "Verified fact",
+  refuse: "Not a fact question",
+  blocked: "Blocked — PII",
+  fallback: "Couldn’t match a fact",
+};
+
 function renderMessage(role, text, link, kind) {
   const wrap = document.createElement("div");
   wrap.className = "msg " + role;
@@ -258,7 +265,17 @@ function renderMessage(role, text, link, kind) {
 
   const bubble = document.createElement("div");
   bubble.className = "bubble" + (kind ? ` bubble--${kind}` : "");
-  bubble.textContent = text;
+
+  if (kind && BUBBLE_TAG_LABELS[kind]) {
+    const tag = document.createElement("div");
+    tag.className = `bubble-tag bubble-tag--${kind}`;
+    tag.innerHTML = `<span class="dot"></span>${BUBBLE_TAG_LABELS[kind]}`;
+    bubble.appendChild(tag);
+  }
+  const textEl = document.createElement("span");
+  textEl.className = "bubble-text";
+  textEl.textContent = text;
+  bubble.appendChild(textEl);
   col.appendChild(bubble);
 
   if (link) {
@@ -354,15 +371,24 @@ window.addEventListener("DOMContentLoaded", () => {
     handleSend(v);
     input.value = "";
   });
+  function onEnterOrSpace(handler) {
+    return (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handler();
+      }
+    };
+  }
+
   document.querySelectorAll(".topic-row, .topic-tile, .example-chip").forEach((tile) => {
-    tile.addEventListener("click", () => {
-      handleSend(tile.dataset.q || tile.textContent);
-    });
+    const activate = () => handleSend(tile.dataset.q || tile.textContent);
+    tile.addEventListener("click", activate);
+    tile.addEventListener("keydown", onEnterOrSpace(activate));
   });
   document.querySelectorAll(".navlinks span[data-scheme-id], .navlinks span[data-scheme-id='']").forEach((el) => {
-    el.addEventListener("click", () => {
-      setActiveScheme(el.dataset.schemeId || null, el);
-    });
+    const activate = () => setActiveScheme(el.dataset.schemeId || null, el);
+    el.addEventListener("click", activate);
+    el.addEventListener("keydown", onEnterOrSpace(activate));
   });
   const resetBtn = document.getElementById("resetChat");
   if (resetBtn) resetBtn.addEventListener("click", resetChat);
