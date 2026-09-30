@@ -36,7 +36,7 @@ Every value is looked up, never generated. The assistant is a deterministic retr
 - Open: the product's future beyond this milestone (more schemes, an LLM/RAG backend, live refresh) is undecided.
 
 ## Brand Commitments
-- Name: FactSetu ("setu" is Hindi/Sanskrit for bridge: a bridge from the question to the official source). Renamed from VerifiedFund on 2026-09-30; the GitHub Pages URL still uses the old repo name. Trademark, domain and app-store availability not yet checked. It has its own identity, and the earlier Groww-imitating look has been replaced. Groww is context only (the product track this milestone belongs to).
+- Name: FactSetu ("setu" is Hindi/Sanskrit for bridge: a bridge from the question to the official source). Renamed from VerifiedFund on 2026-09-30; the GitHub Pages URL still uses the old repo name. Trademark, domain and app-store availability not yet checked. It has its own name, logo and layout. On 2026-09-30 the user chose a greenish-black dark theme with a green accent, in the style of Groww's current app; no Groww name, logo or assets are used. Groww is context only (the product track this milestone belongs to).
 - Disclaimer "Facts-only. No investment advice." must stay visible on every screen.
 - Voice: polite, concise, consistent. Refusals explain what the assistant can't do and point somewhere useful.
 
