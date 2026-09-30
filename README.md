@@ -1,4 +1,4 @@
-# Facts-Only MF Assistant — HDFC Mutual Fund
+# FactSetu — Facts-Only Mutual Fund Assistant (HDFC Mutual Fund)
 
 A small FAQ assistant that answers **verified factual questions** about four HDFC Mutual Fund schemes — expense ratio, exit load, minimum SIP, ELSS lock-in, riskometer, benchmark, and how to download a capital-gains statement — using only official AMC/SEBI/AMFI sources. Every answer carries one citation link. It refuses opinion/advice questions and never accepts or stores PII.
 
@@ -37,14 +37,13 @@ If a hosted LLM key is later available, the same `data/schemes.json` corpus can 
 ## Setup steps
 No installation needed for the UI itself — it's static HTML/CSS/JS with one `fetch()` of a local JSON file.
 ```
-cd mf-assistant
+cd verifiedfund
 python3 -m http.server 8000
 # open http://localhost:8000/index.html
 ```
-To re-run the automated end-to-end check (uses Playwright, included for local testing only — not required to use the app):
+To re-run the automated answer-engine checks (Node, included for local testing only — not required to use the app):
 ```
-pip install playwright && playwright install chromium
-python3 test_e2e.py
+node check_answers.js
 ```
 
 ## Known limits
@@ -52,12 +51,12 @@ python3 test_e2e.py
 - **4 schemes only, one AMC only:** by design, per the milestone's scoping requirement. Asking about a non-HDFC scheme or a 5th HDFC scheme returns a "which scheme do you mean" prompt, not a fabricated answer.
 - **Intent matching is keyword/regex-based, not semantic:** unusual phrasing of a fact question may fall through to the generic "could you rephrase" response rather than being answered. This is a deliberate fail-safe (better to ask again than to guess and cite the wrong fact) but means recall on oddly-worded questions is lower than an LLM-based classifier would give.
 - **No live network calls from the browser:** the app only reads its own local `data/schemes.json` — it does not scrape hdfcfund.com/SEBI/AMFI live, so it cannot self-refresh; refreshing requires manually re-checking sources and editing the JSON.
-- **English only**, single-turn Q&A (no conversation memory across turns).
+- **English only.** Scheme memory (a follow-up like "and exit load?" reuses the last scheme discussed) lasts only for the current browser tab/session — it isn't a persistent account or cross-device history.
 
 ## Deliverables in this repo
 - `index.html`, `app.js`, `data/schemes.json` — the working prototype
 - `sources.csv` — the 22 official source URLs used (AMC scheme pages, KIM/SID, factsheet, SEBI riskometer circular + investor page, AMFI investor pages, HDFC statement-download guide, HDFC ELSS educational page)
-- `sample_qa.md` — 10 sample queries with answers/links, including 2 advice refusals and 1 PII refusal
+- `sample_qa.md` — 13 sample queries with answers/links, including advice refusals, a PII refusal, multi-turn scheme memory, and a factual comparison
 - This README — setup, scope, and known limits
 - Disclaimer snippet used in the UI: **"Facts-only. No investment advice."** (shown as a persistent badge under the header on every screen)
 
