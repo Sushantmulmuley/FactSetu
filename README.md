@@ -15,6 +15,10 @@ A small FAQ assistant that answers **verified factual questions** about four HDF
 
 No build step, no server-side dependency, no API key required — it's a static page hosted on GitHub Pages.
 
+## Disclaimer
+> **Facts-only. No investment advice.**
+> Every answer is a verified fact from an official AMC/SEBI/AMFI source, cited by link. The assistant never recommends, compares performance/returns, or tells you whether to buy, sell, or hold. This badge is shown persistently in the app header and in the footer under the question box on every screen.
+
 ## Why no LLM API call at runtime
 This environment had no LLM API key available. Rather than fake one, the assistant is built as a **small, deterministic retrieval engine**: user text is matched to an *intent* (expense ratio / exit load / min SIP / lock-in / riskometer / benchmark / statement download) and a *scheme* (by name or alias), then the matching fact is pulled from a fixed JSON corpus (`data/schemes.json`) that was hand-populated from the 22 official source pages in `sources.csv`. This is arguably a *stricter* implementation of "Facts-Only" than an LLM-generated answer would be: there is zero chance of a hallucinated number, because every value is looked up, never generated. It still demonstrates the three skills the milestone tests:
 - **W1 (Thinking like a model):** the intent-detection layer decides *fact vs. refuse* before anything is answered.
@@ -58,7 +62,7 @@ node check_answers.js
 - `sources.csv` — the 22 official source URLs used (AMC scheme pages, KIM/SID, factsheet, SEBI riskometer circular + investor page, AMFI investor pages, HDFC statement-download guide, HDFC ELSS educational page)
 - `sample_qa.md` — 13 sample queries with answers/links, including advice refusals, a PII refusal, multi-turn scheme memory, and a factual comparison
 - This README — setup, scope, and known limits
-- Disclaimer snippet used in the UI: **"Facts-only. No investment advice."** (shown as a persistent badge under the header on every screen)
+- Disclaimer snippet (see "Disclaimer" section above) — shown as a persistent badge under the header on every screen
 
 ## Skills demonstrated
 - **W1:** intent/scheme detection before generation — decide *answer* vs. *refuse* first.
