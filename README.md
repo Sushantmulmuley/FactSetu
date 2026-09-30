@@ -47,7 +47,7 @@ node check_answers.js
 ```
 
 ## Known limits
-- **Static corpus, not live retrieval:** facts are current as of the "Last updated from sources" date shown in every answer (26 September 2026). Expense ratios in particular are revised periodically by AMCs — always cross-check the linked source for the latest figure.
+- **Static corpus, not live retrieval:** facts are current as of the "Last updated from sources" date shown in every answer (30 September 2026). Expense ratios in particular are revised periodically by AMCs — always cross-check the linked source for the latest figure.
 - **4 schemes only, one AMC only:** by design, per the milestone's scoping requirement. Asking about a non-HDFC scheme or a 5th HDFC scheme returns a "which scheme do you mean" prompt, not a fabricated answer.
 - **Intent matching is keyword/regex-based, not semantic:** unusual phrasing of a fact question may fall through to the generic "could you rephrase" response rather than being answered. This is a deliberate fail-safe (better to ask again than to guess and cite the wrong fact) but means recall on oddly-worded questions is lower than an LLM-based classifier would give.
 - **No live network calls from the browser:** the app only reads its own local `data/schemes.json` — it does not scrape hdfcfund.com/SEBI/AMFI live, so it cannot self-refresh; refreshing requires manually re-checking sources and editing the JSON.

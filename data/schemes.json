@@ -1,6 +1,6 @@
 {
   "amc": "HDFC Mutual Fund",
-  "last_updated_from_sources": "26 September 2026",
+  "last_updated_from_sources": "30 September 2026",
   "schemes": [
     {
       "id": "large_cap",
@@ -117,7 +117,7 @@
       "category": "Equity - Mid Cap Fund",
       "facts": {
         "expense_ratio": {
-          "value": "0.75% (Direct Plan, Total Expense Ratio)",
+          "value": "0.76% (Direct Plan, Total Expense Ratio)",
           "source": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct"
         },
         "exit_load": {

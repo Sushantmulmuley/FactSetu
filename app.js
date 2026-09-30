@@ -14,7 +14,7 @@ let fallbackStreak = 0;  // consecutive "couldn't understand" replies
 let corpusFailed = false; // fetch fails when index.html is opened as a file:// URL
 
 async function loadCorpus() {
-  const res = await fetch("data/schemes.json?v=2", { cache: "no-cache" });
+  const res = await fetch("data/schemes.json?v=3", { cache: "no-cache" });
   CORPUS = await res.json();
 }
 
