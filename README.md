@@ -11,7 +11,7 @@ A small FAQ assistant that answers **verified factual questions** about four HDF
 - HDFC Mid Cap Fund
 
 ## Live demo
-**https://sushantmulmuley.github.io/verifiedfund/**
+**https://sushantmulmuley.github.io/FactSetu/**
 
 No build step, no server-side dependency, no API key required — it's a static page hosted on GitHub Pages.
 
@@ -37,7 +37,7 @@ If a hosted LLM key is later available, the same `data/schemes.json` corpus can 
 ## Setup steps
 No installation needed for the UI itself — it's static HTML/CSS/JS with one `fetch()` of a local JSON file.
 ```
-cd verifiedfund
+cd FactSetu
 python3 -m http.server 8000
 # open http://localhost:8000/index.html
 ```

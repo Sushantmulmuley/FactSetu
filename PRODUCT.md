@@ -23,7 +23,7 @@ Every value is looked up, never generated. The assistant is a deterministic retr
 - Session-only scheme memory: a follow-up like "and exit load?" reuses the last scheme discussed.
 - Factual side-by-side comparisons ("compare expense ratio of X and Y") are allowed; performance or "which is better" comparisons are refused.
 - Answers read like a chatbot reply, short but not one-liners: one sentence with the verified value, then a two-to-three-sentence plain-language explanation of the term. The explanation is a general definition; every scheme-specific figure comes from the corpus. Each answer ends with its source link and "last updated from sources <date>".
-- Hosted as a static page on GitHub Pages: https://sushantmulmuley.github.io/verifiedfund/
+- Hosted as a static page on GitHub Pages: https://sushantmulmuley.github.io/FactSetu/
 
 ## Capabilities and Constraints
 - Scope: one AMC (HDFC) and four schemes, by design. A scheme outside that scope gets a "which scheme do you mean" prompt, never a fabricated answer.
@@ -36,7 +36,7 @@ Every value is looked up, never generated. The assistant is a deterministic retr
 - Open: the product's future beyond this milestone (more schemes, an LLM/RAG backend, live refresh) is undecided.
 
 ## Brand Commitments
-- Name: FactSetu ("setu" is Hindi/Sanskrit for bridge: a bridge from the question to the official source). Renamed from VerifiedFund on 2026-09-30; the GitHub Pages URL still uses the old repo name. Trademark, domain and app-store availability not yet checked. It has its own name, logo and layout. On 2026-09-30 the user chose a greenish-black dark theme with a green accent, in the style of Groww's current app; no Groww name, logo or assets are used. Groww is context only (the product track this milestone belongs to).
+- Name: FactSetu ("setu" is Hindi/Sanskrit for bridge: a bridge from the question to the official source). Renamed from VerifiedFund on 2026-09-30; the GitHub repo and Pages URL were renamed to match the same day. Trademark, domain and app-store availability not yet checked. It has its own name, logo and layout. On 2026-09-30 the user chose a greenish-black dark theme with a green accent, in the style of Groww's current app; no Groww name, logo or assets are used. Groww is context only (the product track this milestone belongs to).
 - Disclaimer "Facts-only. No investment advice." must stay visible on every screen.
 - Voice: polite, concise, consistent. Refusals explain what the assistant can't do and point somewhere useful.
 
