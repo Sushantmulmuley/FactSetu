@@ -26,6 +26,7 @@
     --blue:#2BD4A4;
     --blue-tint:#12302A;
     --on-accent:#06231B;
+    --page-bg:radial-gradient(70% 45% at 50% 100%, rgba(16,190,148,.10), transparent 70%) fixed, var(--paper);
     --amber:#F0A94B;
     --amber-tint:#33270F;
     --red:#FF7A70;
@@ -42,7 +43,7 @@
   html{ scroll-padding-bottom:150px; }
   body{
     font-family:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-    background:radial-gradient(70% 45% at 50% 100%, rgba(16,190,148,.10), transparent 70%) fixed, var(--paper);
+    background:var(--page-bg);
     color:var(--ink);
     min-height:100dvh;
     display:flex; flex-direction:column;
@@ -267,7 +268,10 @@
   /* ---------- Composer ---------- */
   .composer{
     position:sticky; bottom:0;
-    background:linear-gradient(to bottom, rgba(14,18,17,0), var(--paper) 20px);
+    /* same viewport-fixed backdrop as the page, so the glow continues unbroken behind the bar */
+    background:var(--page-bg);
+    -webkit-mask-image:linear-gradient(to bottom, transparent, #000 20px);
+            mask-image:linear-gradient(to bottom, transparent, #000 20px);
     padding:20px 0 16px;
   }
   form#askForm{ display:flex; background:var(--sheet); border:1px solid var(--rule); border-radius:999px; box-shadow:var(--soft); }
