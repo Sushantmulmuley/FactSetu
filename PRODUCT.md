@@ -22,7 +22,7 @@ Every value is looked up, never generated. The assistant is a deterministic retr
 - Scheme tabs (overview plus the four schemes) set which scheme the session is focused on. The quick questions then point at that scheme.
 - Session-only scheme memory: a follow-up like "and exit load?" reuses the last scheme discussed.
 - Factual side-by-side comparisons ("compare expense ratio of X and Y") are allowed; performance or "which is better" comparisons are refused.
-- Answers read like a chatbot reply, short but not one-liners: one sentence with the verified value, then a two-to-three-sentence plain-language explanation of the term. The explanation is a general definition; every scheme-specific figure comes from the corpus. Each answer ends with its source link and "last updated from sources <date>".
+- Answers read like a chatbot reply, short but not one-liners: one sentence with the verified value, then a one-sentence plain-language explanation of the term, then a sentence naming the exact document it came from: 3 sentences, the milestone maximum. The explanation is general wording; every scheme-specific figure comes from the one cited source; comparisons reply with one answer per scheme, each with its own source. Each answer ends with its source link and "last updated from sources <date>".
 - Hosted as a static page on GitHub Pages: https://sushantmulmuley.github.io/FactSetu/
 
 ## Capabilities and Constraints

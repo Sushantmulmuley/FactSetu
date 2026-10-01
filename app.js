@@ -6,7 +6,8 @@
    without risking hallucinated facts or figures.
 */
 
-const EDU_LINK = "https://www.hdfcfund.com/learners-corner/beginner/what-are-elss-mutual-funds";
+const EDU_LINK = "https://www.amfiindia.com/investor";
+const FACTSHEET_LINK = "https://files.hdfcfund.com/s3fs-public/2026-07/HDFC%20MF%20Factsheet%20-%20June%202026.pdf";
 
 let CORPUS = null;
 let lastSchemeId = null; // session-only memory of the last scheme discussed
@@ -14,7 +15,7 @@ let fallbackStreak = 0;  // consecutive "couldn't understand" replies
 let corpusFailed = false; // fetch fails when index.html is opened as a file:// URL
 
 async function loadCorpus() {
-  const res = await fetch("data/schemes.json?v=3", { cache: "no-cache" });
+  const res = await fetch("data/schemes.json?v=4", { cache: "no-cache" });
   CORPUS = await res.json();
 }
 
@@ -28,10 +29,6 @@ const ADVICE_PATTERNS = [
   /\bworth (buying|investing|it)\b/i,
   /\bbuy or sell\b/i,
   /\bsell\b.*\bnow\b/i,
-  /\bhow much (return|profit)\b/i,
-  /\bwill (it|this fund) (grow|perform|give)/i,
-  /\bcompare (returns|performance)\b/i,
-  /\boutperform/i,
   /\bguarantee/i,
   /\bsure shot\b/i,
   /\bgood (option|fund|choice|investment|pick)\b/i,
@@ -40,6 +37,17 @@ const ADVICE_PATTERNS = [
   /\bwhich (one )?(should|to) (i|we) (pick|choose|go for|invest)/i,
   /\bis it (safe|risky) to invest\b/i,
   /\bwhat.?s? (better|best)\b/i,
+];
+
+// Returns / performance: never computed or compared here; the official factsheet has them.
+const PERFORMANCE_PATTERNS = [
+  /\breturns?\b/i,
+  /\bperform(ance|ed|ing|s)?\b/i,
+  /\boutperform/i,
+  /\b(cagr|xirr)\b/i,
+  /\bprofit\b/i,
+  /\bwill (it|this fund) (grow|give)/i,
+  /\bnav\b.*\b(grow|growth|history|trend)\b/i,
 ];
 
 // PII patterns — never accept/store these; refuse and warn instead
@@ -217,6 +225,17 @@ function answer(query) {
 
   const fixed = correctTypos(q);
   const intents = detectIntents(fixed);
+  if (PERFORMANCE_PATTERNS.some((p) => p.test(q))) {
+    fallbackStreak = 0;
+    return {
+      text: "I don't calculate or compare returns or performance, because those aren't facts I can verify from a fixed source. HDFC Mutual Fund's official monthly factsheet lists each scheme's performance figures.",
+      link: FACTSHEET_LINK,
+      kind: "refuse",
+      label: "Not answered: performance",
+      linkLabel: "Official factsheet",
+    };
+  }
+
   const intent = intents[0] || detectIntent(fixed);
   const schemesMentioned = detectSchemes(fixed);
 
@@ -247,21 +266,37 @@ function answer(query) {
         })),
       };
     }
-    const rows = schemesMentioned
-      .map((s) => {
-        const f = s.facts[intent];
-        return f ? `${s.name}: ${f.value}` : `${s.name}: not available`;
-      })
-      .join("\n");
-    const firstLink = schemesMentioned.find((s) => s.facts[intent])?.facts[intent]?.source || null;
+    // One accurate citation per answer: each scheme's value comes back as its own answer.
+    const parts = schemesMentioned.filter((s) => s.facts[intent]).map((s) => factResult(s, intent));
     fallbackStreak = 0;
     lastSchemeId = schemesMentioned[schemesMentioned.length - 1].id;
     return {
-      text: `${INTENT_LABELS[intent]} —\n${rows}\nLast updated from sources: ${formatDate()}.`,
-      link: firstLink,
+      text: parts.map((r) => r.text).join("\n"),
       kind: "fact",
-      head: `${INTENT_LABELS[intent]} compared`,
-      rows: schemesMentioned.map((s) => ({ name: s.name, value: s.facts[intent] ? s.facts[intent].value : "not available" })),
+      split: parts,
+    };
+  }
+
+  // A scheme named with no specific fact ("what is HDFC Mid Cap Fund?"): a short overview
+  // from facts that share the scheme's one source page.
+  if (!intent && schemesMentioned.length === 1) {
+    const scheme = schemesMentioned[0];
+    const keys = ["benchmark", "riskometer", "min_sip"].filter((k) => scheme.facts[k]);
+    const link = scheme.facts[keys[0]].source;
+    const items = keys
+      .filter((k) => scheme.facts[k].source === link)
+      .map((k) => ({ intent: k, head: INTENT_LABELS[k], value: scheme.facts[k].value, link }));
+    fallbackStreak = 0;
+    lastSchemeId = scheme.id;
+    return {
+      text: items.map((it) => `${it.head} of ${scheme.name}: ${it.value}.`).join(" ") + ` Last updated from sources: ${formatDate()}.`,
+      link,
+      kind: "fact",
+      head: "Overview",
+      overview: true,
+      schemeId: scheme.id,
+      scheme: scheme.name,
+      items,
       asOf: formatDate(),
     };
   }
@@ -290,9 +325,15 @@ function answer(query) {
 
   // Several facts about one scheme in one question: answer each, each with its own source.
   if (intents.length > 1) {
-    const items = intents
-      .filter((k) => scheme.facts[k])
-      .map((k) => ({ intent: k, head: INTENT_LABELS[k], value: scheme.facts[k].value, link: scheme.facts[k].source }));
+    // One citation per answer: keep the facts that share the first fact's source (max 3);
+    // the rest are offered as follow-up questions.
+    const avail = intents.filter((k) => scheme.facts[k]);
+    const firstSource = scheme.facts[avail[0]].source;
+    const items = avail
+      .filter((k) => scheme.facts[k].source === firstSource)
+      .slice(0, 3)
+      .map((k) => ({ intent: k, head: INTENT_LABELS[k], value: scheme.facts[k].value, link: firstSource }));
+    const more = avail.filter((k) => !items.some((it) => it.intent === k));
     fallbackStreak = 0;
     lastSchemeId = scheme.id;
     return {
@@ -303,6 +344,7 @@ function answer(query) {
       schemeId: scheme.id,
       scheme: scheme.name,
       items,
+      more,
       asOf: formatDate(),
     };
   }
@@ -318,7 +360,11 @@ function answer(query) {
 
   fallbackStreak = 0;
   lastSchemeId = scheme.id;
+  return factResult(scheme, intent);
+}
 
+function factResult(scheme, intent) {
+  const fact = scheme.facts[intent];
   return {
     text: `${INTENT_LABELS[intent]} of ${scheme.name}: ${fact.value}. Last updated from sources: ${formatDate()}.`,
     link: fact.source,
@@ -380,23 +426,107 @@ function splitFigure(value) {
 
 // How each fact is phrased in the reply. {s} = scheme, {v} = value (bold), {n} = value note.
 const PHRASES = {
-  expense_ratio: "The expense ratio of {s} is {v}{n}.",
+  expense_ratio: "Sure — the expense ratio of {s} is {v}{n}.",
   exit_load: "For {s}, the exit load is {v}.",
-  min_sip: "You can start an SIP in {s} with {v}.",
-  lockin: "On lock-in for {s}: {v}",
+  min_sip: "You can start an SIP in {s} with as little as {v}.",
+  lockin: "Here's the lock-in position for {s}: {v}",
   riskometer: "{s} is rated {v} on the SEBI riskometer.",
   benchmark: "{s} is benchmarked against {v}{n}.",
 };
-// Plain-language explanation of each term, shown after the verified value.
-// General definitions only: every scheme-specific figure still comes from the corpus.
+
+// One plain-language sentence on what the term means, shown between the answer and its source.
+// General investor-education wording; every scheme-specific figure still comes from the cited page.
 const EXPLAIN = {
-  expense_ratio: "The expense ratio is the yearly fee a fund charges to manage your money, shown as a percentage of what you have invested. It's taken out of the fund's assets, so it's already reflected in the NAV rather than billed to you separately. Direct plans usually cost less than regular plans because they don't include a distributor's commission.",
-  exit_load: "An exit load is a fee charged when you redeem or switch out of a fund before a set period. It's worked out on the amount you take out, and for an SIP each instalment counts from its own allotment date.",
-  min_sip: "This is the smallest amount you can put in each SIP instalment. You can invest more than the minimum if you want to, and you choose the amount and date when you register the SIP.",
-  lockin: "A lock-in is a period during which you can't redeem or switch your units. ELSS funds carry a statutory 3-year lock-in linked to the Section 80C deduction, and with an SIP each instalment is locked for 3 years from its own date. Other equity funds usually have no lock-in, though an exit load can still apply.",
-  riskometer: "The riskometer is SEBI's six-level risk scale: Low, Low to Moderate, Moderate, Moderately High, High and Very High. Every mutual fund has to show it on its documents so you can see how risky the scheme is to your principal, and it's reviewed as the portfolio changes.",
-  benchmark: "A benchmark is the market index a fund's performance is measured against. It tells you which part of the market the fund is compared with; it doesn't mean the fund copies that index.",
+  expense_ratio: "The expense ratio is the yearly fee the fund charges to manage your money, shown as a percentage of your investment, and it's already reflected in the NAV rather than billed to you separately.",
+  exit_load: "An exit load is a fee charged on the amount you redeem or switch out before a set period, and for an SIP each instalment's period counts from its own allotment date.",
+  min_sip: "That's the smallest amount you can put into each SIP instalment, and you're free to invest more than the minimum and pick the amount and date when you register.",
+  lockin: "A lock-in is a period during which you can't redeem or switch your units; ELSS funds carry a statutory 3-year lock-in for each instalment, while other equity funds usually have none.",
+  riskometer: "The riskometer is SEBI's six-level scale, from Low to Very High, that every mutual fund must display so you can see how much risk the scheme carries to your principal.",
+  benchmark: "A benchmark is the market index a fund is measured against, so it tells you which part of the market the scheme is compared with, not that the fund copies that index.",
 };
+// Names the document a figure was taken from, so the second sentence is backed by the same one link.
+function describeSource(url, scheme) {
+  if (/\/direct$/.test(url)) return `the ${scheme} Direct Plan page on hdfcfund.com`;
+  if (/\/regular$/.test(url)) return `the ${scheme} Regular Plan page on hdfcfund.com`;
+  if (/\/KIM\//.test(url)) return `the ${scheme} Key Information Memorandum (KIM)`;
+  if (/\/SID\//.test(url)) return `the ${scheme} Scheme Information Document (SID)`;
+  return sourceDomain(url);
+}
+
+// ---- Reply composition (no DOM: shared by the page, check_answers.js and sample_qa.md) ----
+const MAX_SENTENCES = 3; // milestone rule: answers stay at 3 sentences or fewer
+
+function splitSentences(text) {
+  return String(text).split(/(?<=[.!?])\s+(?=[A-Z(])/).filter(Boolean);
+}
+
+// One sentence as segments; bold marks the verified value.
+function phraseSegments(tpl, scheme, value) {
+  const [fig, note] = splitFigure(value);
+  const segs = [];
+  tpl.split(/(\{s\}|\{v\}|\{n\})/).forEach((part) => {
+    if (part === "{s}") segs.push({ t: scheme });
+    else if (part === "{v}") segs.push({ t: fig.replace(/\.\s+([A-Z])/g, (_, c) => "; " + c.toLowerCase()).replace(/\.$/, ""), b: true });
+    else if (part === "{n}") { if (note) segs.push({ t: ` (${note})` }); }
+    else if (part) segs.push({ t: part });
+  });
+  if (!/[.!?)]\s*$/.test(segs.map((x) => x.t).join(""))) segs.push({ t: "." });
+  return segs;
+}
+
+// Paragraphs of a reply: [{ segs: [{t, b?}], explain?: true }]. Never more than MAX_SENTENCES.
+function composeReply(res) {
+  const paras = [];
+  let used = 0;
+  const add = (segs, explain) => {
+    const n = splitSentences(segs.map((x) => x.t).join("")).length;
+    if (used + n > MAX_SENTENCES) return false;
+    paras.push({ segs, explain });
+    used += n;
+    return true;
+  };
+  const addText = (text, explain) => {
+    const room = splitSentences(text).slice(0, MAX_SENTENCES - used).join(" ");
+    if (room) add([{ t: room }], explain);
+  };
+  const fromSource = () => addText(`${res.items ? "These come" : "This comes"} straight from ${describeSource(res.link, res.scheme)}.`, true);
+  if (res.overview) {
+    const v = Object.fromEntries(res.items.map((it) => [it.intent, splitFigure(it.value)[0]]));
+    const segs = [{ t: `${res.scheme} is one of the four HDFC schemes I cover.` }];
+    add(segs);
+    const parts = [];
+    if (v.benchmark) parts.push([{ t: "it's benchmarked against " }, { t: v.benchmark, b: true }]);
+    if (v.riskometer) parts.push([{ t: "rated " }, { t: v.riskometer, b: true }, { t: " on the SEBI riskometer" }]);
+    if (v.min_sip) parts.push([{ t: "you can start an SIP with " }, { t: v.min_sip, b: true }]);
+    const s2 = [{ t: "In short, " }];
+    parts.forEach((p, i) => {
+      if (i) s2.push({ t: i === parts.length - 1 ? ", and " : ", " });
+      s2.push(...p);
+    });
+    s2.push({ t: "." });
+    add(s2);
+    addText(`These come straight from ${describeSource(res.link, res.scheme)}.`, true);
+  } else if (res.items) {
+    res.items.forEach((it) => add(phraseSegments(PHRASES[it.intent] || "{s}: {v}{n}.", res.scheme, it.value)));
+    fromSource();
+  } else if (res.value) {
+    add(phraseSegments(PHRASES[res.intent] || "{s}: {v}{n}.", res.scheme, res.value));
+    if (EXPLAIN[res.intent]) addText(EXPLAIN[res.intent], true);
+    fromSource();
+  } else {
+    addText(res.body || res.text);
+  }
+  return paras;
+}
+
+// Plain text of a whole answer, in the milestone's citation format.
+function replyPlainText(res) {
+  if (res.split) return res.split.map(replyPlainText).join("\n\n");
+  const lines = composeReply(res).map((p) => p.segs.map((x) => (x.b ? `**${x.t}**` : x.t)).join(""));
+  if (res.link) lines.push(`${res.kind === "fact" ? "Source" : res.linkLabel || "Educational link"}: ${res.link}`);
+  if (res.kind === "fact") lines.push(`Last updated from sources: ${res.asOf}`);
+  return lines.join("\n");
+}
 
 const ASK = {
   expense_ratio: ["Expense ratio", "Expense ratio of {s}?"],
@@ -409,16 +539,10 @@ const ASK = {
 const BOT_MARK = `<svg viewBox="8 9 32 31" fill="none" aria-hidden="true"><path d="M13 10H35a4 4 0 0 1 4 4V29a4 4 0 0 1-4 4H21L14 39V33H13a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4Z" fill="#fff"/><path d="M15.5 27A8.5 8.5 0 0 1 32.5 27" stroke="#0E1211" stroke-width="3.5" stroke-linecap="round"/><circle cx="32.5" cy="27" r="3.2" fill="#0A9E7B"/></svg>`;
 
 // Builds a sentence element, with the value set in bold.
-function sentence(tpl, scheme, value) {
-  const [fig, note] = splitFigure(value);
-  const p = el("p", "reply-text");
-  tpl.split(/(\{s\}|\{v\}|\{n\})/).forEach((part) => {
-    if (part === "{s}") p.append(scheme);
-    else if (part === "{v}") p.append(el("strong", null, fig));
-    else if (part === "{n}") { if (note) p.append(` (${note})`); }
-    else p.append(part);
-  });
-  return p;
+function paraEl(p) {
+  const el_ = el("p", "reply-text" + (p.explain ? " explain" : ""));
+  p.segs.forEach((x) => el_.append(x.b ? el("strong", null, x.t) : x.t));
+  return el_;
 }
 
 // Up to three follow-up questions that stay inside what the desk can answer.
@@ -427,7 +551,10 @@ function suggestions(res) {
   const schemes = CORPUS ? CORPUS.schemes : [];
   const current = res.schemeId ? schemes.find((s) => s.id === res.schemeId)
     : lastSchemeId ? schemes.find((s) => s.id === lastSchemeId) : null;
-  if (res.kind === "fact" && res.intent && current) {
+  if (res.more && res.more.length && current) {
+    // Facts from a different source than this answer's single citation.
+    res.more.slice(0, 3).forEach((k) => out.push([ASK[k][0], ASK[k][1].replace("{s}", current.name)]));
+  } else if (res.kind === "fact" && res.intent && current) {
     const other = schemes.find((s) => s.id !== current.id);
     Object.keys(ASK)
       .filter((k) => k !== res.intent && !known[`${current.id}|${k}`])
@@ -453,7 +580,7 @@ function isStale(asOf) {
   return Number.isFinite(t) && Date.now() - t > 30 * 864e5;
 }
 
-function sourceLine(link, label, asOf) {
+function sourceLine(link, label, asOf, readLabel) {
   const fn = el("div", "footnote");
   const a = el("a", "source-link", sourceDomain(link));
   a.href = link;
@@ -461,28 +588,18 @@ function sourceLine(link, label, asOf) {
   a.rel = "noopener noreferrer";
   a.insertAdjacentHTML("beforeend", LINK_ICON);
   a.setAttribute("aria-label", `${sourceDomain(link)} (official source, opens in a new tab)`);
-  if (label) fn.append(el("span", "mk", label), "Source: ", a, el("span", null, `· last updated from sources ${asOf}`));
-  else fn.append(el("span", null, "Read instead:"), a);
+  if (label) fn.append(el("span", "mk", label), "Source: ", a, el("span", null, `· Last updated from sources: ${asOf}`));
+  else fn.append(el("span", null, `${readLabel || "Read instead"}:`), a);
   return fn;
 }
 
-// Plain-text version of a reply for the clipboard: the sentences, then each source.
-function copyText(msg, links) {
-  const clone = msg.cloneNode(true);
-  clone.querySelectorAll("sup, .footnote, .actions").forEach((n) => n.remove());
-  const words = [...clone.querySelectorAll(".reply-text, .compare tr")]
-    .map((n) => n.innerText.replace(/\s+/g, " ").trim())
-    .filter(Boolean);
-  return [...new Set(words)].join("\n") + "\n" + links.map((l) => `Source: ${l}`).join("\n");
-}
-
-function copyButton(msg, links, asOf) {
+function copyButton(res) {
   const row = el("div", "actions");
   const b = el("button", "copy-btn", "Copy answer");
   b.type = "button";
   b.addEventListener("click", async () => {
     try {
-      await navigator.clipboard.writeText(copyText(msg, links) + `\nLast updated from sources: ${asOf}`);
+      await navigator.clipboard.writeText(replyPlainText(res).replace(/\*\*/g, ""));
       b.textContent = "Copied";
     } catch (e) {
       b.textContent = "Couldn't copy. Select the text instead.";
@@ -493,7 +610,12 @@ function copyButton(msg, links, asOf) {
   return row;
 }
 
-function renderAnswer(body, res, n, replay) {
+function renderAnswer(body, res, n, replay, noChips) {
+  if (res.split) {
+    // A comparison arrives as one short answer per scheme, each with its own source.
+    res.split.forEach((part, i) => renderAnswer(body, part, `${n}${"abcd"[i]}`, replay, i < res.split.length - 1));
+    return;
+  }
   const kind = res.kind || "fallback";
   const cited = kind === "fact" && res.link;
   const reply = el("div", `reply reply--${kind}`);
@@ -503,7 +625,7 @@ function renderAnswer(body, res, n, replay) {
   av.innerHTML = BOT_MARK;
   const k = el("span", `kind kind--${kind}`);
   k.innerHTML = `<svg viewBox="0 0 12 12" fill="none" aria-hidden="true">${KIND_ICONS[kind]}</svg>`;
-  k.append(KIND_LABELS[kind]);
+  k.append(res.label || KIND_LABELS[kind]);
   who.append(av, el("b", null, "FactSetu"), k);
   reply.append(who);
 
@@ -511,52 +633,28 @@ function renderAnswer(body, res, n, replay) {
   const facts = []; // [intent, value, footnote label] landing in the key-facts table
   const sources = []; // [link, footnote label]
 
-  if (res.items) {
-    msg.append(el("p", "reply-text", `Here ${res.items.length === 2 ? "are both" : "are all " + res.items.length} for ${res.scheme}, each from its own source:`));
+  const paras = composeReply(res).map(paraEl);
+  if (res.overview) {
+    paras.forEach((p) => msg.append(p));
+    res.items.forEach((it) => facts.push([it.intent, it.value, String(n)]));
+  } else if (res.items) {
     const list = el("div", "fact-list");
-    res.items.forEach((it, i) => {
-      const label = `${n}${"abcdef"[i]}`;
-      const p = sentence(PHRASES[it.intent] || "{s}: {v}{n}.", res.scheme, it.value);
-      p.append(mark(label));
-      list.append(p);
-      facts.push([it.intent, it.value, label]);
-      sources.push([it.link, label]);
-    });
+    paras.slice(0, res.items.length).forEach((p) => list.append(p));
     msg.append(list);
-  } else if (res.value) {
-    const lead = sentence(PHRASES[res.intent] || "{s}: {v}{n}.", res.scheme, res.value);
-    if (cited) lead.append(mark(n));
-    msg.append(lead);
-    if (EXPLAIN[res.intent]) msg.append(el("p", "reply-text explain", EXPLAIN[res.intent]));
-    if (res.intent && res.schemeId) facts.push([res.intent, res.value, String(n)]);
-    if (res.link) sources.push([res.link, cited ? String(n) : null]);
-  } else if (res.rows) {
-    msg.append(el("p", "reply-text", `Here is the ${res.head.replace(/ compared$/, "").toLowerCase()} for each scheme, side by side. This compares documented charges and terms only, not performance.`));
-    const t = el("table", "compare");
-    res.rows.forEach((r) => {
-      const tr = el("tr");
-      const [fig, note] = splitFigure(r.value);
-      const td = el("td", null, fig);
-      if (note) td.append(el("small", null, note));
-      tr.append(el("th", null, r.name), td);
-      t.append(tr);
-    });
-    msg.append(t);
-    const intent = Object.keys(INTENT_LABELS).find((k) => `${INTENT_LABELS[k]} compared` === res.head);
-    if (EXPLAIN[intent]) msg.append(el("p", "reply-text explain", EXPLAIN[intent]));
-    if (res.link) sources.push([res.link, String(n)]);
+    paras.slice(res.items.length).forEach((p) => msg.append(p));
+    res.items.forEach((it) => facts.push([it.intent, it.value, String(n)]));
   } else {
-    const p = el("p", "reply-text", res.body || res.text);
-    if (cited) p.append(mark(n));
-    msg.append(p);
-    if (res.link) sources.push([res.link, cited ? String(n) : null]);
+    paras.forEach((p) => msg.append(p));
+    if (res.value && res.intent && res.schemeId) facts.push([res.intent, res.value, String(n)]);
   }
+  if (cited) paras[res.overview ? 1 : res.items ? res.items.length - 1 : 0].append(mark(n));
+  if (res.link) sources.push([res.link, cited ? String(n) : null]);
 
-  sources.forEach(([link, label]) => msg.append(sourceLine(link, label, res.asOf)));
+  sources.forEach(([link, label]) => msg.append(sourceLine(link, label, res.asOf, res.linkLabel)));
   if (cited && isStale(res.asOf)) {
     msg.append(el("p", "stale", `These figures were last checked on ${res.asOf}, more than a month ago. They may have changed, so confirm them on the source.`));
   }
-  if (cited) msg.append(copyButton(msg, sources.map(([l]) => l), res.asOf));
+  if (cited) msg.append(copyButton(res));
   reply.append(msg);
 
   // Verified single-scheme facts also land in the key-facts table.
@@ -573,7 +671,7 @@ function renderAnswer(body, res, n, replay) {
   const next = res.choices
     ? res.choices.map((c) => [c.label, c.q])
     : suggestions(res.items ? { ...res, intent: res.items[res.items.length - 1].intent } : res);
-  if (next.length) {
+  if (next.length && !noChips) {
     const chips = el("div", "chips");
     chips.append(el("span", "chips-label", res.choices ? "Choose one" : "You could also ask"));
     next.forEach(([label, q]) => {
@@ -592,12 +690,12 @@ function renderAnswer(body, res, n, replay) {
 function emptyLog() {
   const chat = document.getElementById("chat");
   chat.innerHTML = `<div class="empty-hint">
-    <h3>Ask for one fact. Get its source.</h3>
-    <p>Answers come from the schemes' own documents (factsheets, KIM and SID) and SEBI and AMFI pages. Each answer names its source and date. Nothing here is advice.</p>
+    <h3>Welcome to FactSetu</h3>
+    <p>Ask a factual question about HDFC Large Cap, Flexi Cap, ELSS Tax Saver or Mid Cap Fund. Every answer cites one official AMC, SEBI or AMFI source. Facts-only. No investment advice.</p>
     <div class="try">
-      <button type="button" data-q="Expense ratio of HDFC Flexi Cap Fund?">Expense ratio of HDFC Flexi Cap Fund</button>
-      <button type="button" data-q="Expense ratio and exit load of HDFC Mid Cap Fund">Expense ratio and exit load of Mid Cap</button>
-      <button type="button" data-q="Compare expense ratio of HDFC Large Cap and Flexi Cap">Compare two expense ratios</button>
+      <button type="button" data-q="Expense ratio of HDFC Flexi Cap Fund?">Expense ratio of HDFC Flexi Cap Fund?</button>
+      <button type="button" data-q="What is the lock-in for HDFC ELSS Tax Saver?">ELSS lock-in?</button>
+      <button type="button" data-q="How do I download my capital gains statement?">How to download capital-gains statement?</button>
     </div>
   </div>`;
   chat.querySelectorAll(".try button").forEach((b) => b.addEventListener("click", () => handleSend(b.dataset.q)));
